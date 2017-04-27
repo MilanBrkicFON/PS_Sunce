@@ -6,12 +6,13 @@
 package forma;
 
 import db.Util;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -248,15 +249,15 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
     private javax.swing.JLabel statusKonekcije;
     // End of variables declaration//GEN-END:variables
     private boolean tested = false;
-    private boolean connected = false;
+    //private boolean connected = false;
 
-    public boolean isConnected() {
-        return connected;
-    }
+   // public boolean isConnected() {
+  //      return connected;
+   // }
 
     private void uspostaviKonekciju() throws Exception {
 
-        Repozitorijum.getInstance().uspostaviKonekcijuNaBazu();
+        Kontroler.getInstance().uspostaviKonekcijuNaBazu();
 
         jProgressBar.setVisible(true);
         jProgressBar.setValue(60);
@@ -268,6 +269,8 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
         statusKonekcije.setText(status);
         if (!tested) {
             try {
+                File file = new File("db.properties");
+                file.createNewFile();
                 String imeBaze = jComboBox1.getSelectedItem().toString().toLowerCase();
 
                 String ipAdresa = jtxtIpAdresa.getText().trim();
@@ -282,11 +285,11 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                 properties.setProperty(imeBaze + "_url", url);
                 properties.setProperty(imeBaze + "_user", user);
                 properties.setProperty(imeBaze + "_password", pass);
-                properties.store(new FileOutputStream("db.properties"), "");
+                properties.store(new FileOutputStream(file), "");
                 
                 uspostaviKonekciju();
                 jProgressBar.setValue(100);
-                connected = true;
+                Util.getInstance().setStatus(true);
                 status += " Correct!";
                 statusKonekcije.setText(status);
                 tested = true;

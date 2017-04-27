@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -44,9 +44,13 @@ public class FPocetna extends javax.swing.JFrame {
      * Creates new form FPocetna
      */
     public FPocetna() throws IOException {
-        setLookAndFeel();
-        initComponents();
-        postaviStatus();
+        try {
+            setLookAndFeel();
+            initComponents();
+            postaviStatus();
+        } catch (Exception ex) {
+            Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -256,10 +260,13 @@ public class FPocetna extends javax.swing.JFrame {
     }
     private void jMenuItemKonekcijaSaBazomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemKonekcijaSaBazomActionPerformed
 
-        JDialogUnosParametraZaBazu unosZaBazu = new JDialogUnosParametraZaBazu(null, true);
-        unosZaBazu.setVisible(true);
-        setStatusKon(unosZaBazu.isConnected());
-
+        try {
+            JDialogUnosParametraZaBazu unosZaBazu = new JDialogUnosParametraZaBazu(null, true);
+            unosZaBazu.setVisible(true);
+            postaviStatus();
+        } catch (Exception ex) {
+            Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItemKonekcijaSaBazomActionPerformed
 
     private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
@@ -269,7 +276,7 @@ public class FPocetna extends javax.swing.JFrame {
     private void jbtnPrikaziClanoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziClanoveActionPerformed
         vratiNaPocetnu();
         try {
-            List<Clan> clanovi = Repozitorijum.getInstance().vratiSveClanove();
+            List<Clan> clanovi = Kontroler.getInstance().vratiSveClanove();
             TabelaModelPrikazIIzmenaClan model = new TabelaModelPrikazIIzmenaClan(clanovi);
             JPanel panel = new PanelPrikazClanova(model);
             jPanel2.setVisible(false);
@@ -314,30 +321,21 @@ public class FPocetna extends javax.swing.JFrame {
 
     }
 
-    public void setStatusKon(boolean statusKon) {
-        this.statusKon = statusKon;
-
+    private void postaviStatus() throws Exception {
         try {
-            postaviStatus();
+            if (Util.getInstance().isStatus()) {
+                statusKonekcije.setText("Povezani ste na bazu.");
+                statusKonekcije.setForeground(new Color(0, 153, 51));
+            } else {
+                statusKonekcije.setText("Niste povezani na bazu. (File -> Konekcija sa bazom)");
+                statusKonekcije.setForeground(Color.red);
+                Kontroler.getInstance().uspostaviKonekcijuNaBazu();
+            }
         } catch (IOException ex) {
-            Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void postaviStatus() throws IOException {
-        Properties prop = Util.getInstance().getProperties();
-        statusKon = prop.getProperty("current").isEmpty();
-        System.out.println(statusKon + " current:" +prop.getProperty("current"));
-        statusKonekcije.setText("");
-        if (statusKon) {
             statusKonekcije.setText("Niste povezani na bazu. (File -> Konekcija sa bazom)");
             statusKonekcije.setForeground(Color.red);
-        } else {
-            statusKonekcije.setText("Povezani ste na bazu.");
-            statusKonekcije.setForeground(new Color(0, 153, 51));
         }
-       
-       
+
     }
 
 }

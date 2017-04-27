@@ -25,7 +25,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -168,7 +168,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             System.out.println(clan);
 
             try {
-                Repozitorijum.getInstance().obrisi(clan);
+                Kontroler.getInstance().obrisi(clan);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Brisanje clana", JOptionPane.ERROR_MESSAGE);
             }
@@ -204,7 +204,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             sorter.sort();
 
             List<Mesto> mesta = new ArrayList<>();
-            Repozitorijum.getInstance().vratiMesta(mesta);
+            Kontroler.getInstance().vratiMesta(mesta);
 
             if (!mesta.isEmpty()) {
                 JComboBox jcbMesta = new JComboBox(mesta.toArray());

@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 import osluskivac.OsluskivacClanovi;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -28,7 +28,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) {
         this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad", "Promenjen"};
         this.clanovi = clanovi;
-        Repozitorijum.getInstance().addListener((OsluskivacClanovi) this);
+        Kontroler.getInstance().addListener((OsluskivacClanovi) this);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     @Override
     public void oDodajClana(Clan clan) {
         try {
-            clan.setClanID(Repozitorijum.getInstance().vratiMaxId());
+            clan.setClanID(Kontroler.getInstance().vratiMaxId());
             clanovi.add(clan);
             fireTableDataChanged();
         } catch (Exception ex) {

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -35,16 +35,16 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
      */
     public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal) throws Exception {
         super(parent, modal);
-        this.clanovi = Repozitorijum.getInstance().vratiSveClanove();
+        this.clanovi = Kontroler.getInstance().vratiSveClanove();
         initComponents();
-        
+
         postaviPanele();
     }
 
     public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal, Trening trening) throws Exception {
         this(parent, modal);
         this.trening = trening;
-        
+
     }
 
     /**
@@ -122,26 +122,25 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         List<Clan> kopija = clanovi;
         List<Clan> filteredClanovi = filterList(searchedValue, kopija);
         TabelaModelPrikazClan model = (TabelaModelPrikazClan) panel.getjTable1().getModel();
-        System.out.println("Filtered clanovi size:----"+filteredClanovi.size());
+        System.out.println("Filtered clanovi size:----" + filteredClanovi.size());
         model.setClanovi(filteredClanovi);
     }//GEN-LAST:event_jTxtPretragaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JTable table = panel.getjTable1();
-        System.out.println("Clanovi:----------"+clanovi.size());
         int rowSelectedViewModel = table.convertRowIndexToModel(table.getSelectedRow());
-        System.out.println(rowSelectedViewModel);
-        Clan c = ((TabelaModelPrikazClan)table.getModel()).getClanovi().get(rowSelectedViewModel);
-        System.out.println(c);
-        if (trening.getClanovi().contains(c)) {
-            JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening","Greška",JOptionPane.ERROR_MESSAGE);
-        } else {
-            try {
-                Repozitorijum.getInstance().ubaciNaTrening(c, trening);
-                
-                JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening("+trening+")");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+        if (rowSelectedViewModel == -1) {
+            Clan c = ((TabelaModelPrikazClan) table.getModel()).getClanovi().get(rowSelectedViewModel);
+            if (trening.getClanovi().contains(c)) {
+                JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    Kontroler.getInstance().ubaciNaTrening(c, trening);
+
+                    JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -156,11 +155,11 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
 
     private void postaviPanele() {
         try {
-            
+
             TabelaModelPrikazClan model = new TabelaModelPrikazClan(clanovi);
             panel = new PanelPrikazClanova(model);
             panel.getHeader().setVisible(false);
-            System.out.println("Clanovi: -------------"+clanovi.size());
+            System.out.println("Clanovi: -------------" + clanovi.size());
             this.add(panel);
 
             pack();

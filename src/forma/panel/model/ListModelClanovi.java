@@ -10,7 +10,7 @@ import domen.Trener;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import osluskivac.OsluskivacClanovi;
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -22,7 +22,7 @@ public class ListModelClanovi extends AbstractListModel<Clan> implements Osluski
 
     public ListModelClanovi(List<Clan> clanovi) {
         this.clanovi = clanovi;
-        Repozitorijum.getInstance().addListener((OsluskivacClanovi) this);
+        Kontroler.getInstance().addListener((OsluskivacClanovi) this);
     }
 
     @Override

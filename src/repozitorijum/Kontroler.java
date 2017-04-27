@@ -6,6 +6,7 @@
 package repozitorijum;
 
 import db.DBBroker;
+import db.Util;
 import domen.Clan;
 import domen.Mesto;
 import domen.Trener;
@@ -24,20 +25,20 @@ import osluskivac.OsluskivacClanovi;
  *
  * @author Milan
  */
-public class Repozitorijum {
+public class Kontroler {
 
-    private static Repozitorijum INSTANCE;
+    private static Kontroler INSTANCE;
     private DBBroker dbbr;
     private List<OsluskivacClanovi> listeners;
 
-    private Repozitorijum() {
+    private Kontroler() {
         dbbr = new DBBroker();
         listeners = new ArrayList<>();
     }
 
-    public static Repozitorijum getInstance() {
+    public static Kontroler getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new Repozitorijum();
+            INSTANCE = new Kontroler();
         }
         return INSTANCE;
     }
@@ -61,9 +62,12 @@ public class Repozitorijum {
     public void uspostaviKonekcijuNaBazu() throws Exception {
         try {
             dbbr.uspostaviKonekcijuNaBazu();
+            Util.getInstance().setStatus(true);
         } catch (ClassNotFoundException ex) {
+            Util.getInstance().setStatus(false);
             throw new Exception("Konfiguracioni fajl nije pronadjen.");
         } catch (IOException ex) {
+            Util.getInstance().setStatus(false);
             throw new Exception("Greska prilikom otvaranja i/ili citanja konfiguracionog fajla.");
         } catch (SQLException ex) {
             throw new Exception("Greska prilikom povezivanja sa bazom ili url za bazu nije dobar.");
@@ -239,7 +243,7 @@ public class Repozitorijum {
 
     public static void main(String[] args) {
         try {
-            Repozitorijum r = new Repozitorijum();
+            Kontroler r = new Kontroler();
             List<Clan> ucesnici = new ArrayList<>();
             List<Trener> treneri = new ArrayList<>();
 
@@ -252,7 +256,7 @@ public class Repozitorijum {
             );
             //System.out.println(ucesnici);
         } catch (Exception ex) {
-            Logger.getLogger(Repozitorijum.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Kontroler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

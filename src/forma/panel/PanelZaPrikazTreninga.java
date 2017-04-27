@@ -24,7 +24,8 @@ import java.util.logging.Logger;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import osluskivac.OsluskivacClanovi;
-import repozitorijum.Repozitorijum;
+import radnaMemorija.Memory;
+import repozitorijum.Kontroler;
 
 /**
  *
@@ -239,7 +240,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void jcboxDatumTreningaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboxDatumTreningaActionPerformed
 
         try {
-            treninzi = Repozitorijum.getInstance().vratiSvaVremena(LocalDate.parse((CharSequence) jcboxDatumTreninga.getSelectedItem()));
+            treninzi = Kontroler.getInstance().vratiSvaVremena(LocalDate.parse((CharSequence) jcboxDatumTreninga.getSelectedItem()));
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
@@ -253,16 +254,17 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         if (selectedRow != -1) {
             jProgressBarPopunjenostTreninga.setVisible(true);
             Trening trening = treninzi.get(selectedRow);
+            Memory.getInstance().setTrening(trening);
             List<Trener> treneri = new ArrayList<>();
             List<Clan> clanovi = new ArrayList<>();
             try {
-                treneri = Repozitorijum.getInstance().vratiSveTrenere(trening);
+                treneri = Kontroler.getInstance().vratiSveTrenere(trening);
                 trening.setTreneri(treneri);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja trenera.", "Ucitavanje trenera", JOptionPane.ERROR_MESSAGE);
             }
             try {
-                clanovi = Repozitorijum.getInstance().vratiSveClanove(trening);
+                clanovi = Kontroler.getInstance().vratiSveClanove(trening);
                 trening.setClanovi(clanovi);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja clanova.", "Ucitavanje claniva", JOptionPane.ERROR_MESSAGE);
@@ -283,13 +285,14 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
 
     private void jBtnDodajClanaNaTreningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDodajClanaNaTreningActionPerformed
         try {
-            Trening trening = treninzi.get(jTablePrikazVremena.getSelectedRow());
+            Trening trening = Memory.getInstance().getTrening();
             trening.setClanovi(((ListModelClanovi) jListClanova.getModel()).vratiClanoveNaTreningu());
             UbaciClanoveUTrening dialog = new UbaciClanoveUTrening(null, false, trening);
             dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());
             dialog.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(PanelZaPrikazTreninga.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "ERROR!");
         }
 
     }//GEN-LAST:event_jBtnDodajClanaNaTreningActionPerformed
@@ -322,7 +325,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void ucitajListuTreninga() throws Exception {
         jcboxDatumTreninga.removeAllItems();
         try {
-            List<LocalDate> datumi = Repozitorijum.getInstance().vratiSveDatume();
+            List<LocalDate> datumi = Kontroler.getInstance().vratiSveDatume();
 
             datumi.stream().forEach((da) -> {
                 jcboxDatumTreninga.addItem(da.toString());

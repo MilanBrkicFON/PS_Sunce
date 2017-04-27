@@ -5,7 +5,7 @@
  */
 package forma;
 
-import repozitorijum.Repozitorijum;
+import repozitorijum.Kontroler;
 import domen.Clan;
 import domen.Mesto;
 import greske.SQLObjekatPostojiException;
@@ -150,7 +150,7 @@ public class UnosClana extends javax.swing.JDialog {
             Clan clan = new Clan(ime, prezime, imeRoditelja, pol.charAt(0), ld, godinaUpisa, mesto);
 
             try {
-                Repozitorijum.getInstance().ubaciClana(clan);
+                Kontroler.getInstance().ubaciClana(clan);
 
                 //obavestiSveListeners(clan);
                 JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana.");
@@ -269,7 +269,7 @@ public class UnosClana extends javax.swing.JDialog {
         jComboBoxMesto.removeAllItems();
         jComboBoxMesto.setModel(new DefaultComboBoxModel<>());
         try {
-            Repozitorijum.getInstance().vratiMesta(mesta);
+            Kontroler.getInstance().vratiMesta(mesta);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage() + "\nSistem ne moze da otvori formu za unos.", "Greska combo box", JOptionPane.ERROR_MESSAGE);
 

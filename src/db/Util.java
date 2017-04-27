@@ -19,6 +19,7 @@ public class Util {
 
     private Properties properties;
     private static Util INSTANCE;
+    private boolean status;
     
     private Util() throws IOException{
         properties = new Properties();
@@ -48,4 +49,13 @@ public class Util {
     public String getPassword(){
         return properties.getProperty(properties.getProperty("current")+"_password");
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
 }
