@@ -64,12 +64,15 @@ public class Kontroler {
             dbbr.uspostaviKonekcijuNaBazu();
             Util.getInstance().setStatus(true);
         } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
             Util.getInstance().setStatus(false);
             throw new Exception("Konfiguracioni fajl nije pronadjen.");
         } catch (IOException ex) {
+            ex.printStackTrace();
             Util.getInstance().setStatus(false);
             throw new Exception("Greska prilikom otvaranja i/ili citanja konfiguracionog fajla.");
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new Exception("Greska prilikom povezivanja sa bazom ili url za bazu nije dobar.");
         }
     }
