@@ -254,7 +254,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         if (selectedRow != -1) {
             jProgressBarPopunjenostTreninga.setVisible(true);
             Trening trening = treninzi.get(selectedRow);
-            Memory.getInstance().setTrening(trening);
+            Memory.getInstance().setObj(trening);
             List<Trener> treneri = new ArrayList<>();
             List<Clan> clanovi = new ArrayList<>();
             try {
@@ -285,7 +285,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
 
     private void jBtnDodajClanaNaTreningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDodajClanaNaTreningActionPerformed
         try {
-            Trening trening = Memory.getInstance().getTrening();
+            Trening trening = (Trening) Memory.getInstance().getObj();
             trening.setClanovi(((ListModelClanovi) jListClanova.getModel()).vratiClanoveNaTreningu());
             UbaciClanoveUTrening dialog = new UbaciClanoveUTrening(null, false, trening);
             dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());

@@ -8,9 +8,7 @@ package forma;
 import domen.Clan;
 import domen.Trening;
 import forma.panel.PanelPrikazClanova;
-import forma.panel.model.ListModelClanovi;
 import forma.panel.model.TabelaModelPrikazClan;
-import forma.panel.model.TabelaModelPrikazIIzmenaClan;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.TableModel;
 import repozitorijum.Kontroler;
 
 /**
@@ -26,7 +23,7 @@ import repozitorijum.Kontroler;
  * @author Milan
  */
 public class UbaciClanoveUTrening extends javax.swing.JDialog {
-
+    
     private final List<Clan> clanovi;
     private Trening trening;
 
@@ -37,14 +34,14 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         super(parent, modal);
         this.clanovi = Kontroler.getInstance().vratiSveClanove();
         initComponents();
-
+        
         postaviPanele();
     }
-
+    
     public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal, Trening trening) throws Exception {
         this(parent, modal);
         this.trening = trening;
-
+        
     }
 
     /**
@@ -122,26 +119,30 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         List<Clan> kopija = clanovi;
         List<Clan> filteredClanovi = filterList(searchedValue, kopija);
         TabelaModelPrikazClan model = (TabelaModelPrikazClan) panel.getjTable1().getModel();
-        System.out.println("Filtered clanovi size:----" + filteredClanovi.size());
+        //System.out.println("Filtered clanovi size:----" + filteredClanovi.size());
         model.setClanovi(filteredClanovi);
     }//GEN-LAST:event_jTxtPretragaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JTable table = panel.getjTable1();
-        int rowSelectedViewModel = table.convertRowIndexToModel(table.getSelectedRow());
-        if (rowSelectedViewModel == -1) {
-            Clan c = ((TabelaModelPrikazClan) table.getModel()).getClanovi().get(rowSelectedViewModel);
-            if (trening.getClanovi().contains(c)) {
-                JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    Kontroler.getInstance().ubaciNaTrening(c, trening);
-
-                    JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage());
+        try {
+            int rowSelectedViewModel = table.convertRowIndexToModel(table.getSelectedRow());
+            if (rowSelectedViewModel != -1) {
+                Clan c = ((TabelaModelPrikazClan) table.getModel()).getClanovi().get(rowSelectedViewModel);
+                if (trening.getClanovi().contains(c)) {
+                    JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        Kontroler.getInstance().ubaciNaTrening(c, trening);
+                        
+                        JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage());
+                    }
                 }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(this, "Morate izabrati clana iz tabele!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -152,22 +153,22 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
     private javax.swing.JTextField jTxtPretraga;
     // End of variables declaration//GEN-END:variables
     private PanelPrikazClanova panel;
-
+    
     private void postaviPanele() {
         try {
-
+            
             TabelaModelPrikazClan model = new TabelaModelPrikazClan(clanovi);
             panel = new PanelPrikazClanova(model);
             panel.getHeader().setVisible(false);
-            System.out.println("Clanovi: -------------" + clanovi.size());
+            //System.out.println("Clanovi: -------------" + clanovi.size());
             this.add(panel);
-
+            
             pack();
         } catch (Exception ex) {
             Logger.getLogger(UbaciClanoveUTrening.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public List<Clan> filterList(Predicate<String> p, List<Clan> clanovi) {
         List<Clan> result = new ArrayList<>();
         for (Clan clan : clanovi) {

@@ -279,7 +279,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                 String pass = jtxtLozinka.getText().trim();
                 Properties properties = Util.getInstance().getProperties();
                 final String url = "jdbc:mysql://" + ipAdresa + ":" + port + "/pssunce";
-
+                System.out.println("URL: "+url);
                 properties.setProperty("current", imeBaze);
                 properties.setProperty(imeBaze + "_driver", "com.mysql.jdbc.Driver");
                 properties.setProperty(imeBaze + "_url", url);

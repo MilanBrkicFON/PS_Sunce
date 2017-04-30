@@ -18,10 +18,7 @@ public class Memory {
     
     private static Memory instance;
     
-    private Trening trening;
-    private Clan clan;
-    private Mesto mesto;
-    private Trener trener;
+    private Object obj;
     
     private Memory(){
         
@@ -34,45 +31,16 @@ public class Memory {
         return instance;
     }
 
-    public Trening getTrening() {
-        return trening;
+    public Object getObj() {
+        Object o = obj;
+        obj = null;
+        return o;
     }
 
-    public void setTrening(Trening trening) {
-        this.trening = trening;
+    public void setObj(Object obj) {
+        this.obj = obj;
     }
 
-    public Clan getClan() {
-        return clan;
-    }
 
-    public void setClan(Clan clan) {
-        this.clan = clan;
-    }
-
-    public Mesto getMesto() {
-        return mesto;
-    }
-
-    public void setMesto(Mesto mesto) {
-        this.mesto = mesto;
-    }
-
-    public Trener getTrener() {
-        return trener;
-    }
-
-    public void setTrener(Trener trener) {
-        this.trener = trener;
-    }
-    
-    /**
-     * Postavlja null vrednost na sve atribute u memoriji
-     */
-    public void clearMemory(){
-        this.clan = null;
-        this.mesto = null;
-        this.trener = null;
-        this.trening = null;
-    }
+   
 }

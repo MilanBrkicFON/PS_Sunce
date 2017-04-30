@@ -8,7 +8,6 @@ package db;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.AuthProvider;
 import java.util.Properties;
 
 /**
@@ -50,7 +49,7 @@ public class Util {
         return properties.getProperty(properties.getProperty("current")+"_password");
     }
 
-    public boolean isStatus() {
+    public boolean isConnectedStatus() {
         return status;
     }
 

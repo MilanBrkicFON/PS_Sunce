@@ -7,25 +7,16 @@ package forma;
 
 import db.Util;
 import domen.Clan;
-import forma.panel.LogoPanel;
 import forma.panel.PanelPrikazClanova;
 import forma.panel.PanelZaPrikazTreninga;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -259,7 +250,6 @@ public class FPocetna extends javax.swing.JFrame {
 
     }
     private void jMenuItemKonekcijaSaBazomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemKonekcijaSaBazomActionPerformed
-
         try {
             JDialogUnosParametraZaBazu unosZaBazu = new JDialogUnosParametraZaBazu(null, true);
             unosZaBazu.setVisible(true);
@@ -322,14 +312,15 @@ public class FPocetna extends javax.swing.JFrame {
     }
 
     private void postaviStatus() throws Exception {
+
         try {
-            if (Util.getInstance().isStatus()) {
+            Kontroler.getInstance().uspostaviKonekcijuNaBazu();
+            if (Util.getInstance().isConnectedStatus()) {
                 statusKonekcije.setText("Povezani ste na bazu.");
                 statusKonekcije.setForeground(new Color(0, 153, 51));
             } else {
                 statusKonekcije.setText("Niste povezani na bazu. (File -> Konekcija sa bazom)");
                 statusKonekcije.setForeground(Color.red);
-                Kontroler.getInstance().uspostaviKonekcijuNaBazu();
             }
         } catch (IOException ex) {
             statusKonekcije.setText("Niste povezani na bazu. (File -> Konekcija sa bazom)");
