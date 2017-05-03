@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import osluskivac.OsluskivacClanovi;
 import repozitorijum.Kontroler;
@@ -19,7 +21,7 @@ import repozitorijum.Kontroler;
  *
  * @author Milan
  */
-public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi {
+public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi, TableModelListener {
 
     private List<Clan> clanovi;
     private final String[] naslov;
@@ -28,6 +30,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) {
         this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad", "Promenjen"};
         this.clanovi = clanovi;
+        addTableModelListener(this);
         Kontroler.getInstance().addListener((OsluskivacClanovi) this);
     }
 
@@ -87,24 +90,28 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
 
         }
     }
+    int row = 0;
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        Clan c = clanovi.get(rowIndex);
-        System.out.println(c);
-        switch (columnIndex) {
 
+        Clan c = clanovi.get(rowIndex);
+        switch (columnIndex) {
+            
             case 1:
                 c.setIme((String) aValue);
                 c.setPromenjen(true);
+                fireTableRowsUpdated(rowIndex, rowIndex);
                 break;
             case 2:
                 c.setPrezime((String) aValue);
                 c.setPromenjen(true);
+                 fireTableRowsUpdated(rowIndex, rowIndex);
                 break;
             case 3:
                 c.setImeRoditelja((String) aValue);
                 c.setPromenjen(true);
+                 fireTableRowsUpdated(rowIndex, rowIndex);
                 break;
             case 4:
                 c.setDatumRodjenja(LocalDate.parse((CharSequence) aValue));
@@ -131,10 +138,12 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     public List<Clan> getClanovi() {
         return clanovi;
     }
-    public void setClanovi(List<Clan> clanovi){
+
+    public void setClanovi(List<Clan> clanovi) {
         this.clanovi = clanovi;
         fireTableDataChanged();
     }
+
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex != 0 && columnIndex != 8;
@@ -156,15 +165,41 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
         clanovi.remove(clan);
         fireTableDataChanged();
     }
-
-    private int vratiNajveciID() {
-        int maxId = clanovi.get(0).getClanID();
-        for (Clan clan : clanovi) {
-            if (clan.getClanID() > maxId) {
-                maxId = clan.getClanID();
-            }
+    private String upit ="UPDATE clan SET ";
+    
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        
+        //TO-DO
+        
+        System.out.println("DESILA SE PROMENA!");
+        int firstRow = e.getFirstRow();
+        int lastRow = e.getLastRow();
+        int index = e.getColumn();
+        switch (e.getType()) {
+            case TableModelEvent.INSERT:
+                for (int i = firstRow; i <= lastRow; i++) {
+                    System.out.println(i);
+                }
+                break;
+            case TableModelEvent.UPDATE:
+                if (firstRow == TableModelEvent.HEADER_ROW) {
+                    if (index == TableModelEvent.ALL_COLUMNS) {
+                        System.out.println("A column was added");
+                    } else {
+                        System.out.println(index + "in header changed");
+                    }
+                } else {
+                    System.out.println("column: "+ index);
+                    upit += getColumnName(index) +"="+ getValueAt(firstRow, index);
+                    System.out.println(upit);
+                }
+                break;
+            case TableModelEvent.DELETE:
+                for (int i = firstRow; i <= lastRow; i++) {
+                    System.out.println(i);
+                }
+                break;
         }
-        return maxId+1;
     }
-
 }

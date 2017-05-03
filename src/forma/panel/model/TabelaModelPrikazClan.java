@@ -6,14 +6,8 @@
 package forma.panel.model;
 
 import domen.Clan;
-import domen.Mesto;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import osluskivac.OsluskivacClanovi;
-import repozitorijum.Kontroler;
 
 /**
  *

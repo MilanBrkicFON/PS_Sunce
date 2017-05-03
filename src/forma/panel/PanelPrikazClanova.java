@@ -77,6 +77,11 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
 
         jBtnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_1492201245_save.png"))); // NOI18N
         jBtnSave.setToolTipText("sacuvaj");
+        jBtnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnSaveActionPerformed(evt);
+            }
+        });
 
         jBtnObrisi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_delete.png"))); // NOI18N
         jBtnObrisi.setToolTipText("obrisi");
@@ -88,7 +93,6 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
 
         jBtnDodaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_add_friend-512.png"))); // NOI18N
         jBtnDodaj.setToolTipText("dodaj clana");
-        jBtnDodaj.setActionCommand("");
         jBtnDodaj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnDodajActionPerformed(evt);
@@ -175,6 +179,16 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jBtnObrisiActionPerformed
 
+    private void jBtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSaveActionPerformed
+        List<Clan> clanoviIzModela = ((TabelaModelPrikazIIzmenaClan)jTable1.getModel()).getClanovi();
+        
+        for (Clan clan : clanoviIzModela) {
+            if (clan.isPromenjen()) {
+                //Kontroler.getInstance().promeni(clan);
+            }
+        }
+    }//GEN-LAST:event_jBtnSaveActionPerformed
+
     public JPanel getHeader() {
         return jPanelHeader;
     }
@@ -192,7 +206,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         try {
 
             jTable1.setModel(model);
-
+            
             TableRowSorter<TableModel> sorter = new TableRowSorter<>(jTable1.getModel());
             jTable1.setRowSorter(sorter);
             List<RowSorter.SortKey> sortKeys = new ArrayList<>();

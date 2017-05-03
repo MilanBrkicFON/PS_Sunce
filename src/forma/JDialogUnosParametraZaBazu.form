@@ -70,9 +70,9 @@
                           <Component id="jtxtPort" min="-2" pref="86" max="-2" attributes="0"/>
                           <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jtxtLozinka" max="32767" attributes="0"/>
+                              <Component id="jPasswordField" alignment="0" max="32767" attributes="0"/>
                               <Component id="jtxtKorisnickoIme" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -127,8 +127,8 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jtxtLozinka" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jPasswordField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="109" max="32767" attributes="0"/>
                   <Component id="statusKonekcije" min="-2" pref="14" max="-2" attributes="0"/>
@@ -193,8 +193,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="jtxtKorisnickoIme">
         </Component>
-        <Component class="javax.swing.JTextField" name="jtxtLozinka">
-        </Component>
         <Component class="javax.swing.JProgressBar" name="jProgressBar">
           <Properties>
             <Property name="opaque" type="boolean" value="true"/>
@@ -221,6 +219,8 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Status: "/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="jPasswordField">
         </Component>
       </SubComponents>
     </Container>

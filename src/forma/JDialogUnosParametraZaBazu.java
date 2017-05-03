@@ -9,6 +9,7 @@ import db.Util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,15 +49,14 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jtxtKorisnickoIme = new javax.swing.JTextField();
-        jtxtLozinka = new javax.swing.JTextField();
         jProgressBar = new javax.swing.JProgressBar();
         jBtnPovezi = new javax.swing.JButton();
         jBtnTest = new javax.swing.JButton();
         statusKonekcije = new javax.swing.JLabel();
+        jPasswordField = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Konektovanje na bazu");
-        setSize(new java.awt.Dimension(527, 348));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Konekcija sa bazom", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
@@ -114,9 +114,9 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jtxtPort, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jtxtLozinka)
+                            .addComponent(jPasswordField, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jtxtKorisnickoIme))
                         .addContainerGap())))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -159,8 +159,8 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                     .addComponent(jtxtKorisnickoIme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jtxtLozinka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(statusKonekcije, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -241,10 +241,10 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPasswordField jPasswordField;
     private javax.swing.JProgressBar jProgressBar;
     private javax.swing.JTextField jtxtIpAdresa;
     private javax.swing.JTextField jtxtKorisnickoIme;
-    private javax.swing.JTextField jtxtLozinka;
     private javax.swing.JTextField jtxtPort;
     private javax.swing.JLabel statusKonekcije;
     // End of variables declaration//GEN-END:variables
@@ -276,7 +276,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                 String ipAdresa = jtxtIpAdresa.getText().trim();
                 String port = jtxtPort.getText().trim();
                 String user = jtxtKorisnickoIme.getText().trim().toLowerCase();
-                String pass = jtxtLozinka.getText().trim();
+                String pass = Arrays.toString(jPasswordField.getPassword());
                 Properties properties = Util.getInstance().getProperties();
                 final String url = "jdbc:mysql://" + ipAdresa + ":" + port + "/pssunce";
                 System.out.println("URL: "+url);
