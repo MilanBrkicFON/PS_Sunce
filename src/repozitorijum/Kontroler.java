@@ -286,6 +286,21 @@ public class Kontroler {
             dbbr.potvrdiTransakciju();
             obavestiSveDodavanje(c);
         } catch (Exception ex) {
+            ex.printStackTrace();
+            dbbr.ponistiTransakciju();
+            throw new Exception("Desila se greška tokom ubacivanja člana na trening.");
+        } finally {
+            dbbr.raskiniKonekciju();
+        }
+    }
+    
+    public void promeni(Clan clan) throws Exception {
+        uspostaviKonekcijuNaBazu();
+        try {
+            dbbr.updateClan(clan);
+            dbbr.potvrdiTransakciju();
+        } catch (Exception ex) {
+            ex.printStackTrace();
             dbbr.ponistiTransakciju();
             throw new Exception("Desila se greška tokom ubacivanja člana na trening.");
         } finally {

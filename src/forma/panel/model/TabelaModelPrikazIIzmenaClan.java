@@ -21,7 +21,7 @@ import repozitorijum.Kontroler;
  *
  * @author Milan
  */
-public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi, TableModelListener {
+public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi {
 
     private List<Clan> clanovi;
     private final String[] naslov;
@@ -30,8 +30,9 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) {
         this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad", "Promenjen"};
         this.clanovi = clanovi;
-        addTableModelListener(this);
         Kontroler.getInstance().addListener((OsluskivacClanovi) this);
+        System.out.println("-------------------------------------------------");
+                
     }
 
     @Override
@@ -90,44 +91,41 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
 
         }
     }
-    int row = 0;
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
         Clan c = clanovi.get(rowIndex);
         switch (columnIndex) {
-            
+
             case 1:
+                c.setPromenjen(promeniStatus(c.getIme(), aValue));
                 c.setIme((String) aValue);
-                c.setPromenjen(true);
-                fireTableRowsUpdated(rowIndex, rowIndex);
                 break;
             case 2:
+                c.setPromenjen(promeniStatus(c.getPrezime(), aValue));
                 c.setPrezime((String) aValue);
-                c.setPromenjen(true);
-                 fireTableRowsUpdated(rowIndex, rowIndex);
-                break;
+               break;
             case 3:
+                c.setPromenjen(promeniStatus(c.getImeRoditelja(), aValue));
                 c.setImeRoditelja((String) aValue);
-                c.setPromenjen(true);
-                 fireTableRowsUpdated(rowIndex, rowIndex);
                 break;
             case 4:
-                c.setDatumRodjenja(LocalDate.parse((CharSequence) aValue));
+                //TO-DO
                 c.setPromenjen(true);
+                c.setDatumRodjenja(LocalDate.parse((CharSequence) aValue));
                 break;
             case 5:
-                c.setPol((char) aValue);
-                c.setPromenjen(true);
+                c.setPromenjen(promeniStatus(String.valueOf(c.getPol()),aValue));
+                c.setPol(((String)aValue).charAt(0));
                 break;
             case 6:
-                c.setGodinaUpisa((int) aValue);
-                c.setPromenjen(true);
+                c.setPromenjen(promeniStatus(String.valueOf(c.getGodinaUpisa()),aValue));
+                c.setGodinaUpisa(Integer.parseInt((String) aValue));
                 break;
             case 7:
-                c.setMesto((Mesto) aValue);
                 c.setPromenjen(true);
+                c.setMesto((Mesto) aValue);
                 break;
             case 8:
                 break;
@@ -165,41 +163,13 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
         clanovi.remove(clan);
         fireTableDataChanged();
     }
-    private String upit ="UPDATE clan SET ";
-    
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        
-        //TO-DO
-        
-        System.out.println("DESILA SE PROMENA!");
-        int firstRow = e.getFirstRow();
-        int lastRow = e.getLastRow();
-        int index = e.getColumn();
-        switch (e.getType()) {
-            case TableModelEvent.INSERT:
-                for (int i = firstRow; i <= lastRow; i++) {
-                    System.out.println(i);
-                }
-                break;
-            case TableModelEvent.UPDATE:
-                if (firstRow == TableModelEvent.HEADER_ROW) {
-                    if (index == TableModelEvent.ALL_COLUMNS) {
-                        System.out.println("A column was added");
-                    } else {
-                        System.out.println(index + "in header changed");
-                    }
-                } else {
-                    System.out.println("column: "+ index);
-                    upit += getColumnName(index) +"="+ getValueAt(firstRow, index);
-                    System.out.println(upit);
-                }
-                break;
-            case TableModelEvent.DELETE:
-                for (int i = firstRow; i <= lastRow; i++) {
-                    System.out.println(i);
-                }
-                break;
+
+    private boolean promeniStatus(String ime, Object aValue) {
+        if(!ime.equals((String) aValue)){
+            fireTableDataChanged();
+            return true;
         }
+        return false;
     }
+
 }

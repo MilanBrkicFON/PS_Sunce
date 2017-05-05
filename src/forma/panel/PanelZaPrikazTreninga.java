@@ -279,6 +279,8 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             } catch (Exception e) {
 
             }
+        }else{
+            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!");
         }
 
     }//GEN-LAST:event_jTablePrikazVremenaMouseClicked
@@ -292,7 +294,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             dialog.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(PanelZaPrikazTreninga.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "ERROR!");
+            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!","Greska",JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jBtnDodajClanaNaTreningActionPerformed

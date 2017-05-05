@@ -12,6 +12,7 @@ import domen.Trener;
 import domen.Trening;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -372,6 +373,23 @@ public class DBBroker {
         statement.setTime(3, Time.valueOf(trening.getVremeDo()));
         statement.setDate(4, Date.valueOf(trening.getDatum()));
 
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    public void updateClan(Clan clan) throws SQLException {
+        String upit = "UPDATE clan SET ime = ?, prezime = ?, imeRoditelja = ?, datumRodjenja = ?, pol = ?, godinaUpisa = ?, ptt = ? where clanid = ?";
+        System.out.println(upit);
+        PreparedStatement statement = connection.prepareStatement(upit);
+        statement.setString(1, clan.getIme());
+        statement.setString(2, clan.getPrezime());
+        statement.setString(3, clan.getImeRoditelja());
+        statement.setDate(4, Date.valueOf(clan.getDatumRodjenja()));
+        statement.setString(5, String.valueOf(clan.getPol()));
+        statement.setInt(6, clan.getGodinaUpisa());
+        statement.setInt(7, clan.getMesto().getPtt());
+        statement.setInt(8, clan.getClanID());
+        
         statement.executeUpdate();
         statement.close();
     }

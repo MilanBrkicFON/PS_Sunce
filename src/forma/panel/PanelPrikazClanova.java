@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -40,8 +42,6 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
 
         initComponents();
         postaviModel(model);
-        headerPostavke();
-
     }
 
     /**
@@ -180,12 +180,22 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
     }//GEN-LAST:event_jBtnObrisiActionPerformed
 
     private void jBtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSaveActionPerformed
-        List<Clan> clanoviIzModela = ((TabelaModelPrikazIIzmenaClan)jTable1.getModel()).getClanovi();
-        
-        for (Clan clan : clanoviIzModela) {
-            if (clan.isPromenjen()) {
-                //Kontroler.getInstance().promeni(clan);
+        List<Clan> clanoviIzModela = ((TabelaModelPrikazIIzmenaClan) jTable1.getModel()).getClanovi();
+        String promenjeni = "Izvrsena je promena podataka nad clanovima sa sledecim id:\n";
+        try {
+            for (Clan clan : clanoviIzModela) {
+                if (clan.isPromenjen()) {
+
+                    Kontroler.getInstance().promeni(clan);
+                    promenjeni += "- " + clan.getClanID() + '\n';
+                    clan.setPromenjen(false);
+                }
             }
+            JOptionPane.showMessageDialog(this, promenjeni);
+            TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
+            model.fireTableDataChanged();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }//GEN-LAST:event_jBtnSaveActionPerformed
 
@@ -206,7 +216,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         try {
 
             jTable1.setModel(model);
-            
+
             TableRowSorter<TableModel> sorter = new TableRowSorter<>(jTable1.getModel());
             jTable1.setRowSorter(sorter);
             List<RowSorter.SortKey> sortKeys = new ArrayList<>();
@@ -229,29 +239,6 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-    }
-
-    private void headerPostavke() {
-        postaviDugme(jBtnSave);
-
-    }
-
-    public List<Clan> vratiClanoveIzModela() {
-        return ((TabelaModelPrikazIIzmenaClan) jTable1.getModel()).getClanovi();
-    }
-
-    public void postaviModelTabele(TableModel model) {
-        if (model != null) {
-            jTable1.setModel(model);
-        }
-    }
-
-    private void postaviDugme(JButton jBtnSave) {
-//jBtnSave.setFocusPainted(false);
-        //jBtnSave.setMargin(new Insets(0, 0, 0, 0));
-        jBtnSave.setContentAreaFilled(false);
-//        jBtnSave.setBorderPainted(false);
-//        jBtnSave.setOpaque(false);
     }
 
     public JTable getjTable1() {
