@@ -301,21 +301,20 @@ public class DBBroker {
         String upit = "SELECT vremeOd, vremeDo "
                 + "FROM trening WHERE datum = ?";
         System.out.println(upit);
-        PreparedStatement statement = connection.prepareStatement(upit);
-        statement.setDate(1, Date.valueOf(datum));
-
-        ResultSet rs = statement.executeQuery();
-        List<Trening> vremena = new ArrayList<>();
-
-        while (rs.next()) {
-            Trening t = new Trening();
-            t.setDatum(datum);
-            t.setVremeOd(rs.getTime("vremeOd").toLocalTime());
-            t.setVremeDo(rs.getTime("vremeDo").toLocalTime());
-            vremena.add(t);
+        List<Trening> vremena;
+        try (PreparedStatement statement = connection.prepareStatement(upit)) {
+            statement.setDate(1, Date.valueOf(datum));
+            try (ResultSet rs = statement.executeQuery()) {
+                vremena = new ArrayList<>();
+                while (rs.next()) {
+                    Trening t = new Trening();
+                    t.setDatum(datum);
+                    t.setVremeOd(rs.getTime("vremeOd").toLocalTime());
+                    t.setVremeDo(rs.getTime("vremeDo").toLocalTime());
+                    vremena.add(t);
+                }
+            }
         }
-        rs.close();
-        statement.close();
         return vremena;
     }
 
@@ -326,71 +325,69 @@ public class DBBroker {
 
         System.out.println(upit);
 
-        PreparedStatement statement = connection.prepareStatement(upit);
-        statement.setString(1, clan.getIme());
-        statement.setString(2, clan.getPrezime());
-        statement.setString(3, clan.getImeRoditelja());
-        statement.setDate(4, Date.valueOf(clan.getDatumRodjenja()));
-        statement.setString(5, String.valueOf(clan.getPol()));
-        statement.setInt(6, clan.getGodinaUpisa());
-        statement.setInt(7, clan.getMesto().getPtt());
-
-        statement.executeUpdate();
-
-        statement.close();
+        try (PreparedStatement statement = connection.prepareStatement(upit)) {
+            statement.setString(1, clan.getIme());
+            statement.setString(2, clan.getPrezime());
+            statement.setString(3, clan.getImeRoditelja());
+            statement.setDate(4, Date.valueOf(clan.getDatumRodjenja()));
+            statement.setString(5, String.valueOf(clan.getPol()));
+            statement.setInt(6, clan.getGodinaUpisa());
+            statement.setInt(7, clan.getMesto().getPtt());
+            
+            statement.executeUpdate();
+        }
     }
 
     public void obrisiClana(Clan clan) throws SQLException {
         String upit = "DELETE FROM clan WHERE clanID = ?";
         System.out.println(upit);
-        PreparedStatement statement = connection.prepareStatement(upit);
-        statement.setInt(1, clan.getClanID());
-
-        statement.executeUpdate();
-        statement.close();
+        try (PreparedStatement statement = connection.prepareStatement(upit)) {
+            statement.setInt(1, clan.getClanID());
+            
+            statement.executeUpdate();
+        }
     }
 
     public int vratiMaxId() throws SQLException {
         String upit = "SELECT MAX(clanid) AS maxid FROM clan";
         System.out.println(upit);
-        PreparedStatement statement = connection.prepareStatement(upit);
-        ResultSet rs = statement.executeQuery();
-        int maxId = 0;
-        while (rs.next()) {
-            maxId = rs.getInt("maxid");
-        }
-        rs.close();
-        statement.close();
+        int maxId;
+        try (PreparedStatement statement = connection.prepareStatement(upit); 
+                ResultSet rs = statement.executeQuery()) {
+            maxId = 0;
+            while (rs.next()) {
+                maxId = rs.getInt("maxid");
+            }          }
         return maxId;
     }
 
     public void insertClanOnTraining(Clan c, Trening trening) throws SQLException {
         String upit = "INSERT INTO tclan(clanid, vremeod, vremedo, datum) VALUES(?,?,?,?)";
         System.out.println(upit);
-        PreparedStatement statement = connection.prepareStatement(upit);
-        statement.setInt(1, c.getClanID());
-        statement.setTime(2, Time.valueOf(trening.getVremeOd()));
-        statement.setTime(3, Time.valueOf(trening.getVremeDo()));
-        statement.setDate(4, Date.valueOf(trening.getDatum()));
-
-        statement.executeUpdate();
-        statement.close();
+        try (PreparedStatement statement = connection.prepareStatement(upit)) {
+            statement.setInt(1, c.getClanID());
+            statement.setTime(2, Time.valueOf(trening.getVremeOd()));
+            statement.setTime(3, Time.valueOf(trening.getVremeDo()));
+            statement.setDate(4, Date.valueOf(trening.getDatum()));
+            
+            statement.executeUpdate();
+        }
     }
 
     public void updateClan(Clan clan) throws SQLException {
         String upit = "UPDATE clan SET ime = ?, prezime = ?, imeRoditelja = ?, datumRodjenja = ?, pol = ?, godinaUpisa = ?, ptt = ? where clanid = ?";
         System.out.println(upit);
-        PreparedStatement statement = connection.prepareStatement(upit);
-        statement.setString(1, clan.getIme());
-        statement.setString(2, clan.getPrezime());
-        statement.setString(3, clan.getImeRoditelja());
-        statement.setDate(4, Date.valueOf(clan.getDatumRodjenja()));
-        statement.setString(5, String.valueOf(clan.getPol()));
-        statement.setInt(6, clan.getGodinaUpisa());
-        statement.setInt(7, clan.getMesto().getPtt());
-        statement.setInt(8, clan.getClanID());
-        
-        statement.executeUpdate();
-        statement.close();
+        try (PreparedStatement statement = connection.prepareStatement(upit)) {
+            statement.setString(1, clan.getIme());
+            statement.setString(2, clan.getPrezime());
+            statement.setString(3, clan.getImeRoditelja());
+            statement.setDate(4, Date.valueOf(clan.getDatumRodjenja()));
+            statement.setString(5, String.valueOf(clan.getPol()));
+            statement.setInt(6, clan.getGodinaUpisa());
+            statement.setInt(7, clan.getMesto().getPtt());
+            statement.setInt(8, clan.getClanID());
+            
+            statement.executeUpdate();
+        }
     }
 }
