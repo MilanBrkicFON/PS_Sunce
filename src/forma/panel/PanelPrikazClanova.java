@@ -231,7 +231,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             Kontroler.getInstance().vratiMesta(mesta);
 
             if (!mesta.isEmpty()) {
-                JComboBox jcbMesta = new JComboBox(mesta.toArray());
+                JComboBox jcbMesta = new JComboBox<>(mesta.toArray());
                 TableColumnModel tcm = jTable1.getColumnModel();
                 TableColumn tc = tcm.getColumn(7);
                 tc.setCellEditor(new DefaultCellEditor(jcbMesta));

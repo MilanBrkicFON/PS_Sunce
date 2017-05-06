@@ -293,7 +293,6 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());
             dialog.setVisible(true);
         } catch (Exception ex) {
-            Logger.getLogger(PanelZaPrikazTreninga.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!","Greska",JOptionPane.ERROR_MESSAGE);
         }
 
