@@ -15,7 +15,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import osluskivac.OsluskivacClanovi;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *
@@ -28,7 +28,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     private boolean promenjen = false;
 
     public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) {
-        this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad", "Promenjen"};
+        this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad"};
         this.clanovi = clanovi;
         Kontroler.getInstance().addListener((OsluskivacClanovi) this);
         System.out.println("-------------------------------------------------");
@@ -56,11 +56,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        if (columnIndex == 8) {
-            return Boolean.class;
-        } else {
             return super.getColumnClass(columnIndex); //To change body of generated methods, choose Tools | Templates.
-        }
     }
 
     @Override
@@ -84,8 +80,6 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
                 return c.getGodinaUpisa();
             case 7:
                 return c.getMesto().getNaziv();
-            case 8:
-                return c.isPromenjen();
             default:
                 return "N/A";
 
@@ -127,8 +121,6 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
                 c.setPromenjen(true);
                 c.setMesto((Mesto) aValue);
                 break;
-            case 8:
-                break;
         }
 
     }
@@ -144,7 +136,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex != 0 && columnIndex != 8;
+        return columnIndex != 0;
     }
 
     @Override

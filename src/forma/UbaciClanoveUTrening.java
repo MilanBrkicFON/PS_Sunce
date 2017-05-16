@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *

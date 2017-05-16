@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *
@@ -235,7 +235,7 @@ public class FPocetna extends javax.swing.JFrame {
             jPanel2.setVisible(false);
             getContentPane().add(panel);
             panel.setVisible(true);
-            pack();
+            //pack();
         } catch (Exception ex) {
             Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -275,7 +275,7 @@ public class FPocetna extends javax.swing.JFrame {
             jPanel2.setVisible(false);
             getContentPane().add(panel);
             panel.setVisible(true);
-            pack();
+           // pack();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }

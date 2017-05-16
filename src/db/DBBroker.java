@@ -217,7 +217,7 @@ public class DBBroker {
     public List<Clan> getAllClan(Trening trening) throws SQLException {
         String upit = "SELECT c.*, m.naziv AS naziv "
                 + "FROM clan AS c LEFT JOIN mesto AS m ON c.ptt = m.ptt "
-                + "JOIN tclan AS tc ON c.clanid = tc.clanid "
+                + "JOIN tclan AS tc ON c.clanid = tc.cid "
                 + "WHERE tc.vremeOd = ? AND tc.vremeDo = ? AND tc.datum = ?";
 
         PreparedStatement statement = connection.prepareStatement(upit);
@@ -249,7 +249,7 @@ public class DBBroker {
 
     public List<Trener> getAllTrener(Trening trening) throws SQLException {
         String upit = "SELECT t.* , s.naziv as naziv, s.maxBrClanova as maxBr "
-                + "FROM trener AS t LEFT JOIN sport AS s ON t.sportID = s.sportID JOIN tt AS tt ON t.trenerID = tt.trenerID "
+                + "FROM trener AS t LEFT JOIN sport AS s ON t.sportID = s.sportID JOIN tt AS tt ON t.trenerID = tt.tID "
                 + "WHERE tt.vremeOd = ? AND tt.vremeDo = ? AND tt.datum = ?";
 
         PreparedStatement statement = connection.prepareStatement(upit);
@@ -362,7 +362,7 @@ public class DBBroker {
     }
 
     public void insertClanOnTraining(Clan c, Trening trening) throws SQLException {
-        String upit = "INSERT INTO tclan(clanid, vremeod, vremedo, datum) VALUES(?,?,?,?)";
+        String upit = "INSERT INTO tclan(cid, vremeod, vremedo, datum) VALUES(?,?,?,?)";
         System.out.println(upit);
         try (PreparedStatement statement = connection.prepareStatement(upit)) {
             statement.setInt(1, c.getClanID());

@@ -27,7 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *

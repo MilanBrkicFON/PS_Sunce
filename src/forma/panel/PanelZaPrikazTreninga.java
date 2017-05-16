@@ -25,7 +25,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import osluskivac.OsluskivacClanovi;
 import radnaMemorija.Memory;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *

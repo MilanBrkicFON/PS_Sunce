@@ -5,7 +5,7 @@
  */
 package forma;
 
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 import domen.Clan;
 import domen.Mesto;
 import greske.SQLObjekatPostojiException;

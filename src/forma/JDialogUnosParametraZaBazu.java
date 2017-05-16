@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *

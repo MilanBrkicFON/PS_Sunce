@@ -10,7 +10,7 @@ import domen.Trener;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import osluskivac.OsluskivacClanovi;
-import repozitorijum.Kontroler;
+import kontroler.Kontroler;
 
 /**
  *
