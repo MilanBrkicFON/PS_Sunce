@@ -9,11 +9,18 @@ import db.Util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kontroler.Kontroler;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import status.EnumResponseStatus;
+import util.Akcije;
 
 /**
  *
@@ -257,8 +264,21 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
 
     private void uspostaviKonekciju() throws Exception {
 
-        Kontroler.getInstance().uspostaviKonekcijuNaBazu();
-
+             ObjectOutputStream out;
+            ObjectInputStream in;
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+            
+            RequestObject request = new RequestObject();
+            request.setAction(Akcije.USPOSTAVI_KONEKCIJU_NA_BAZU);
+            out.writeObject(request);
+            
+            in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+            EnumResponseStatus status = response.getStatus();
+            if (status == EnumResponseStatus.ERROR) {
+                throw new Exception(response.getMessage());
+             }
         jProgressBar.setVisible(true);
         jProgressBar.setValue(60);
 
@@ -289,7 +309,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                 
                 uspostaviKonekciju();
                 jProgressBar.setValue(100);
-                Util.getInstance().setStatus(true);
+                //Util.getInstance().setStatus(true);
                 status += " Correct!";
                 statusKonekcije.setText(status);
                 tested = true;

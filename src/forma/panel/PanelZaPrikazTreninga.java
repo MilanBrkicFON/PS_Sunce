@@ -12,20 +12,20 @@ import forma.UbaciClanoveUTrening;
 import forma.panel.model.ListModelClanovi;
 import forma.panel.model.ListModelTrener;
 import forma.panel.model.TableModelPrikazVreme;
-import java.awt.EventQueue;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.Socket;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-import osluskivac.OsluskivacClanovi;
 import radnaMemorija.Memory;
-import kontroler.Kontroler;
+import request.RequestObject;
+import response.ResponseObject;
+import util.Akcije;
 
 /**
  *
@@ -53,41 +53,22 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void initComponents() {
 
         Centralni = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jListTrener = new javax.swing.JList<>();
         jPanel3 = new javax.swing.JPanel();
         jcboxDatumTreninga = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTablePrikazVremena = new javax.swing.JTable();
         jProgressBarPopunjenostTreninga = new javax.swing.JProgressBar();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListTrener = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListClanova = new javax.swing.JList<>();
         jBtnDodajClanaNaTrening = new javax.swing.JButton();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Treneri"));
-
-        jListTrener.setFont(new java.awt.Font("Times New Roman", 0, 13)); // NOI18N
-        jListTrener.setEnabled(false);
-        jScrollPane2.setViewportView(jListTrener);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        jPanel3.setMaximumSize(new java.awt.Dimension(32767, 100));
 
         jcboxDatumTreninga.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,7 +109,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jcboxDatumTreninga, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -140,13 +121,35 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcboxDatumTreninga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jProgressBarPopunjenostTreninga.setName("Popunjenost treninga"); // NOI18N
         jProgressBarPopunjenostTreninga.setOpaque(true);
         jProgressBarPopunjenostTreninga.setStringPainted(true);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Treneri"));
+
+        jListTrener.setFont(new java.awt.Font("Times New Roman", 0, 13)); // NOI18N
+        jListTrener.setEnabled(false);
+        jScrollPane2.setViewportView(jListTrener);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Clanovi"));
 
@@ -169,7 +172,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBtnDodajClanaNaTrening, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
@@ -182,7 +185,28 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jBtnDodajClanaNaTrening)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -195,11 +219,9 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addGroup(CentralniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jProgressBarPopunjenostTreninga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(CentralniLayout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(CentralniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         CentralniLayout.setVerticalGroup(
@@ -209,11 +231,8 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addComponent(jProgressBarPopunjenostTreninga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(CentralniLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(CentralniLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -240,12 +259,25 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void jcboxDatumTreningaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboxDatumTreningaActionPerformed
 
         try {
-            treninzi = Kontroler.getInstance().vratiSvaVremena(LocalDate.parse((CharSequence) jcboxDatumTreninga.getSelectedItem()));
-        } catch (Exception ex) {
+            Socket socket = Memory.getInstance().getSocket();
+
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setObject((LocalDate) jcboxDatumTreninga.getSelectedItem());
+            requestObj.setAction(Akcije.VRATI_VREMENA);
+            out.writeObject(requestObj);
+
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+            treninzi = (List<Trening>) response.getObject();
+
+            /*Kontroler.getInstance().vratiSvaVremena((LocalDate) jcboxDatumTreninga.getSelectedItem());*/
+            popuniTabeluVremena(treninzi);
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
 
-        popuniTabeluVremena(treninzi);
+
     }//GEN-LAST:event_jcboxDatumTreningaActionPerformed
 
     private void jTablePrikazVremenaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePrikazVremenaMouseClicked
@@ -257,19 +289,41 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             Memory.getInstance().setObj(trening);
             List<Trener> treneri = new ArrayList<>();
             List<Clan> clanovi = new ArrayList<>();
+            Socket socket = Memory.getInstance().getSocket();
             try {
-                treneri = Kontroler.getInstance().vratiSveTrenere(trening);
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                RequestObject requestObj = new RequestObject();
+
+                ObjectInputStream in;
+                requestObj.setAction(Akcije.VRATI_SVE_TRENERE_ZA_TRENING);
+                requestObj.setObject(trening);
+                out.writeObject(requestObj);
+                in = new ObjectInputStream(socket.getInputStream());
+                ResponseObject responseObj = (ResponseObject) in.readObject();
+                treneri = (List<Trener>) responseObj.getObject();
+                /*Kontroler.getInstance().vratiSveTrenere(trening);*/
                 trening.setTreneri(treneri);
-            } catch (Exception ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja trenera.", "Ucitavanje trenera", JOptionPane.ERROR_MESSAGE);
             }
             try {
-                clanovi = Kontroler.getInstance().vratiSveClanove(trening);
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                RequestObject requestObj = new RequestObject();
+
+                ObjectInputStream in;
+                requestObj.setAction(Akcije.VRATI_SVE_CLANOVE_ZA_TRENING);
+                requestObj.setObject(trening);
+                out.writeObject(requestObj);
+
+                in = new ObjectInputStream(socket.getInputStream());
+                ResponseObject responseObj = (ResponseObject) in.readObject();
+
+                clanovi = (List<Clan>) responseObj.getObject();
+                /*Kontroler.getInstance().vratiSveClanove(trening);*/
                 trening.setClanovi(clanovi);
-            } catch (Exception ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja clanova.", "Ucitavanje claniva", JOptionPane.ERROR_MESSAGE);
             }
-
             jListTrener.setModel(new ListModelTrener(treneri));
             jListClanova.setModel(new ListModelClanovi(clanovi));
             try {
@@ -279,7 +333,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             } catch (Exception e) {
 
             }
-        }else{
+        } else {
             JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!");
         }
 
@@ -293,7 +347,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());
             dialog.setVisible(true);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!","Greska",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!", "Greska", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jBtnDodajClanaNaTreningActionPerformed
@@ -308,12 +362,13 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JProgressBar jProgressBarPopunjenostTreninga;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTablePrikazVremena;
-    private javax.swing.JComboBox<String> jcboxDatumTreninga;
+    private javax.swing.JComboBox<LocalDate> jcboxDatumTreninga;
     // End of variables declaration//GEN-END:variables
 
     private void popuniTabeluVremena(List<Trening> treninzi) {
@@ -326,12 +381,22 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void ucitajListuTreninga() throws Exception {
         jcboxDatumTreninga.removeAllItems();
         try {
-            List<LocalDate> datumi = Kontroler.getInstance().vratiSveDatume();
+            Socket socket = Memory.getInstance().getSocket();
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+
+            ObjectInputStream in;
+            requestObj.setAction(Akcije.VRATI_DATUME);
+            out.writeObject(requestObj);
+
+            in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            List<LocalDate> datumi = (List<LocalDate>) responseObj.getObject();
 
             datumi.stream().forEach((da) -> {
-                jcboxDatumTreninga.addItem(da.toString());
+                jcboxDatumTreninga.addItem(da);
             });
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             //ex.printStackTrace();
             throw new Exception(ex + "\nNe moze se prikazati panel sa treninzima!");
         }

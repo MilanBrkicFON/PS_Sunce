@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -247,17 +248,12 @@ public class Kontroler {
     public static void main(String[] args) {
         try {
             Kontroler r = new Kontroler();
-            List<Clan> ucesnici = new ArrayList<>();
-            List<Trener> treneri = new ArrayList<>();
-
-//            treneri = r.vratiSveTrenere(new Trening(LocalTime.of(13, 20, 0),
-//                    LocalTime.of(14, 0, 0), LocalDate.of(2017, 4, 5)));
-//
-//            ucesnici = r.vratiSveClanove(new Trening(LocalTime.of(13, 20, 0),
-//                    LocalTime.of(14, 0, 0), LocalDate.of(2017, 4, 5)));
-            System.out.println(r.vratiSvaVremena(LocalDate.of(2017, 4, 5))
-            );
-            //System.out.println(ucesnici);
+            List<Clan> ucesnici = Arrays.asList(new Clan(123),new Clan(111));
+            ucesnici.get(0).setPromenjen(true);
+            ucesnici.get(1).setPromenjen(true);
+            
+            r.promeni(ucesnici);
+            
         } catch (Exception ex) {
             Logger.getLogger(Kontroler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -293,16 +289,21 @@ public class Kontroler {
             dbbr.raskiniKonekciju();
         }
     }
-    
-    public void promeni(Clan clan) throws Exception {
+
+    public void promeni(List<Clan> clanovi) throws Exception {
         uspostaviKonekcijuNaBazu();
         try {
-            dbbr.updateClan(clan);
+            for (Clan clan : clanovi) {
+                if (clan.isPromenjen()) {
+                    dbbr.updateClan(clan);
+                    clan.setPromenjen(false);
+                }
+            }
             dbbr.potvrdiTransakciju();
         } catch (Exception ex) {
             ex.printStackTrace();
             dbbr.ponistiTransakciju();
-            throw new Exception("Desila se greška tokom ubacivanja člana na trening.");
+            throw new Exception("Desila se greška tokom izmene članova.");
         } finally {
             dbbr.raskiniKonekciju();
         }

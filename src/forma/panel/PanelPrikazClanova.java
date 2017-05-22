@@ -9,25 +9,29 @@ import domen.Clan;
 import domen.Mesto;
 import forma.UnosClana;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import kontroler.Kontroler;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import status.EnumResponseStatus;
+import util.Akcije;
 
 /**
  *
@@ -169,10 +173,17 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
 
         if (odg == 0) {
 
-            System.out.println(clan);
-
             try {
-                Kontroler.getInstance().obrisi(clan);
+                Socket socket = Memory.getInstance().getSocket();
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                RequestObject request = new RequestObject(clan, Akcije.OBRISI_CLANA);
+                out.writeObject(request);
+
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                ResponseObject response = (ResponseObject) in.readObject();
+                if (response.getStatus() == EnumResponseStatus.ERROR) {
+                    throw new Exception(response.getMessage());
+                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Brisanje clana", JOptionPane.ERROR_MESSAGE);
             }
@@ -183,13 +194,19 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         List<Clan> clanoviIzModela = ((TabelaModelPrikazIIzmenaClan) jTable1.getModel()).getClanovi();
         String promenjeni = "Izvrsena je promena podataka nad clanovima sa sledecim id:\n";
         try {
-            for (Clan clan : clanoviIzModela) {
-                if (clan.isPromenjen()) {
+            Socket socket = Memory.getInstance().getSocket();
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject request = new RequestObject(clanoviIzModela, Akcije.PROMENI_CLANOVE);
+            out.writeObject(request);
 
-                    Kontroler.getInstance().promeni(clan);
-                    promenjeni += "- " + clan.getClanID() + '\n';
-                    clan.setPromenjen(false);
-                }
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+            if (response.getStatus() == EnumResponseStatus.ERROR) {
+                throw new Exception(response.getMessage());
+            }
+            List<Clan> promenjeniClanovi = (List<Clan>) response.getObject();
+            for (Clan clan : promenjeniClanovi) {
+                promenjeni += "- " + clan.getClanID() + '\n';
             }
             JOptionPane.showMessageDialog(this, promenjeni);
             TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
@@ -227,8 +244,16 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             sorter.setSortKeys(sortKeys);
             sorter.sort();
 
-            List<Mesto> mesta = new ArrayList<>();
-            Kontroler.getInstance().vratiMesta(mesta);
+            Socket socket = Memory.getInstance().getSocket();
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setAction(Akcije.VRATI_SVA_MESTA);
+            out.writeObject(requestObj);
+
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            List<Mesto> mesta = (List<Mesto>) responseObj.getObject();
 
             if (!mesta.isEmpty()) {
                 JComboBox jcbMesta = new JComboBox<>(mesta.toArray());

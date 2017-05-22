@@ -7,6 +7,10 @@ package forma.panel.model;
 
 import domen.Clan;
 import domen.Mesto;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,6 +20,10 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import osluskivac.OsluskivacClanovi;
 import kontroler.Kontroler;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import util.Akcije;
 
 /**
  *
@@ -142,10 +150,20 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     @Override
     public void oDodajClana(Clan clan) {
         try {
-            clan.setClanID(Kontroler.getInstance().vratiMaxId());
+            Socket socket = Memory.getInstance().getSocket();
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setAction(Akcije.VRATI_MAX_ID);
+            out.writeObject(requestObj);
+
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            int max = (int) responseObj.getObject();
+            clan.setClanID(max);
             clanovi.add(clan);
             fireTableDataChanged();
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(TabelaModelPrikazIIzmenaClan.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

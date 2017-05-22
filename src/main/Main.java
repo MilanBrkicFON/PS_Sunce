@@ -5,9 +5,9 @@
  */
 package main;
 
-import forma.FPocetna;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import klijent.Klijent;
 
 /**
  *
@@ -23,10 +23,11 @@ public class Main {
     
     public static void main(String[] args) {
         try {
-            FPocetna forma = new FPocetna();
-            forma.setVisible(true);
+            Klijent klijent = new Klijent();
+            klijent.poveziSeSaServerom();
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Konfiguracioni fajl nije pronadjen!","Greska",JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,ex.getMessage(),"Greska",JOptionPane.ERROR_MESSAGE);
         }
     }
 }

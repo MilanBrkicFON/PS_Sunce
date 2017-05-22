@@ -5,26 +5,29 @@
  */
 package forma;
 
-import kontroler.Kontroler;
 import domen.Clan;
 import domen.Mesto;
-import greske.SQLObjekatPostojiException;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
-import osluskivac.OsluskivacClanovi;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import util.Akcije;
 
 /**
  *
@@ -137,35 +140,49 @@ public class UnosClana extends javax.swing.JDialog {
         panelZaUnosRoditelj.getjPanel1().setBorder(null);
         if (izvrsiProveru() & datumskaProvera()) {
 
-            String ime = panelZaUnosIme.getJtxtFieldText();
-            String prezime = panelZaUnosPrezime.getJtxtFieldText();
-            String imeRoditelja = panelZaUnosRoditelj.getJtxtFieldText();
-            String pol = panelPol1.returnSelected();
-            String datumRodj = panelZaDatumRodj.getJtxtFieldText();
-            int godinaUpisa = (int) jSpinnerGodUpisa.getValue();
-            //Date date = format.parse(panelZaDatumRodj.getJtxtFieldText());
-            LocalDate ld = LocalDate.parse(datumRodj.subSequence(0, datumRodj.length()), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            Mesto mesto = (Mesto) jComboBoxMesto.getSelectedItem();
-
-            Clan clan = new Clan(ime, prezime, imeRoditelja, pol.charAt(0), ld, godinaUpisa, mesto);
-
+            ObjectOutputStream out = null;
             try {
-                Kontroler.getInstance().ubaciClana(clan);
-
-                //obavestiSveListeners(clan);
-                JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana.");
-                int i = JOptionPane.showConfirmDialog(this, "Da li želite da dodate još članova?");
-                if (i == 1) {
-                    this.setVisible(false);
+                String ime = panelZaUnosIme.getJtxtFieldText();
+                String prezime = panelZaUnosPrezime.getJtxtFieldText();
+                String imeRoditelja = panelZaUnosRoditelj.getJtxtFieldText();
+                String pol = panelPol1.returnSelected();
+                String datumRodj = panelZaDatumRodj.getJtxtFieldText();
+                int godinaUpisa = (int) jSpinnerGodUpisa.getValue();
+                //Date date = format.parse(panelZaDatumRodj.getJtxtFieldText());
+                LocalDate ld = LocalDate.parse(datumRodj.subSequence(0, datumRodj.length()), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                Mesto mesto = (Mesto) jComboBoxMesto.getSelectedItem();
+                
+                Clan clan = new Clan(ime, prezime, imeRoditelja, pol.charAt(0), ld, godinaUpisa, mesto);
+                
+                Socket socket = Memory.getInstance().getSocket();
+                out = new ObjectOutputStream(socket.getOutputStream());
+                
+                RequestObject requestObj = new RequestObject();
+                requestObj.setAction(Akcije.UBACI_CLANA);
+                requestObj.setObject(clan);
+                
+                out.writeObject(requestObj);
+                
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                ResponseObject responseObj = (ResponseObject) in.readObject();
+                
+                if(responseObj.getStatus() == status.EnumResponseStatus.OK){
+                    JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana.");
+                    int i = JOptionPane.showConfirmDialog(this, "Da li želite da dodate još članova?");
+                    if (i == 1) {
+                        this.setVisible(false);
+                    }
+                    if (i == 0) {
+                        restartujPolja();
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(this, responseObj.getMessage(), "Ubacivanje člana", JOptionPane.ERROR_MESSAGE);
                 }
-                if (i == 0) {
-                    restartujPolja();
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Ubacivanje člana", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLObjekatPostojiException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Clan postoji u bazi", JOptionPane.ERROR_MESSAGE);
-            }
+            } catch (IOException ex) {
+                Logger.getLogger(UnosClana.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(UnosClana.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         } else {
             JOptionPane.showMessageDialog(this, "Popuni prazna polja");
 
@@ -265,20 +282,31 @@ public class UnosClana extends javax.swing.JDialog {
     }
 
     private void popuniCombo() throws Exception {
-        List<Mesto> mesta = new ArrayList<>();
-        jComboBoxMesto.removeAllItems();
-        jComboBoxMesto.setModel(new DefaultComboBoxModel<>());
         try {
-            Kontroler.getInstance().vratiMesta(mesta);
-        } catch (Exception ex) {
+            Socket socket = Memory.getInstance().getSocket();
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setAction(Akcije.VRATI_SVA_MESTA);
+            out.writeObject(requestObj);
+
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            List<Mesto> mesta = (List<Mesto>) responseObj.getObject();
+            jComboBoxMesto.removeAllItems();
+            jComboBoxMesto.setModel(new DefaultComboBoxModel<>());
+
+            //Kontroler.getInstance().vratiMesta(mesta);
+            mesta.stream().forEach((m) -> {
+                jComboBoxMesto.addItem(m);
+            });
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, ex.getMessage() + "\nSistem ne moze da otvori formu za unos.", "Greska combo box", JOptionPane.ERROR_MESSAGE);
 
             throw new Exception();
         }
 
-        mesta.stream().forEach((m) -> {
-            jComboBoxMesto.addItem(m);
-        });
     }
 
 //    private void obavestiSveListeners(Clan clan) {
@@ -296,7 +324,7 @@ public class UnosClana extends javax.swing.JDialog {
         panelZaUnosPrezime.getJtxtField().addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               panelZaUnosRoditelj.getJtxtField().requestFocus();
+                panelZaUnosRoditelj.getJtxtField().requestFocus();
             }
         });
         panelZaUnosRoditelj.getJtxtField().addActionListener(new AbstractAction() {
@@ -311,7 +339,7 @@ public class UnosClana extends javax.swing.JDialog {
                 panelPol1.getComponent(2).requestFocus();
             }
         });
-        
+
     }
 
 }

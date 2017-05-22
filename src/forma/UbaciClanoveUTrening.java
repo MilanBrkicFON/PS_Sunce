@@ -9,6 +9,9 @@ import domen.Clan;
 import domen.Trening;
 import forma.panel.PanelPrikazClanova;
 import forma.panel.model.TabelaModelPrikazClan;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.List;
@@ -16,14 +19,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import kontroler.Kontroler;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import status.EnumResponseStatus;
+import util.Akcije;
 
 /**
  *
  * @author Milan
  */
 public class UbaciClanoveUTrening extends javax.swing.JDialog {
-    
+
     private final List<Clan> clanovi;
     private Trening trening;
 
@@ -32,16 +39,16 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
      */
     public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal) throws Exception {
         super(parent, modal);
-        this.clanovi = Kontroler.getInstance().vratiSveClanove();
+        this.clanovi = vratiClanove();
         initComponents();
-        
+
         postaviPanele();
     }
-    
+
     public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal, Trening trening) throws Exception {
         this(parent, modal);
         this.trening = trening;
-        
+
     }
 
     /**
@@ -133,8 +140,20 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
                 } else {
                     try {
-                        Kontroler.getInstance().ubaciNaTrening(c, trening);
-                        
+                        Socket socket = Memory.getInstance().getSocket();
+                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                        RequestObject requestObj = new RequestObject();
+                        requestObj.setAction(Akcije.DODAJ_CLANA_NA_TRENING);
+                        Object[] o = {c, trening};
+                        requestObj.setObject(o);
+                        out.writeObject(requestObj);
+                        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                        ResponseObject responseObj = (ResponseObject) in.readObject();
+                        if (responseObj.getStatus() == EnumResponseStatus.ERROR) {
+                            throw new Exception(responseObj.getMessage());
+                        }
+                        //Kontroler.getInstance().ubaciNaTrening(c, trening);
+
                         JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -153,22 +172,22 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
     private javax.swing.JTextField jTxtPretraga;
     // End of variables declaration//GEN-END:variables
     private PanelPrikazClanova panel;
-    
+
     private void postaviPanele() {
         try {
-            
+
             TabelaModelPrikazClan model = new TabelaModelPrikazClan(clanovi);
             panel = new PanelPrikazClanova(model);
             panel.getHeader().setVisible(false);
             //System.out.println("Clanovi: -------------" + clanovi.size());
             this.add(panel);
-            
+
             pack();
         } catch (Exception ex) {
             Logger.getLogger(UbaciClanoveUTrening.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public List<Clan> filterList(Predicate<String> p, List<Clan> clanovi) {
         List<Clan> result = new ArrayList<>();
         for (Clan clan : clanovi) {
@@ -177,5 +196,26 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
             }
         }
         return result;
+    }
+
+    private List<Clan> vratiClanove() throws Exception {
+        ObjectOutputStream out = null;
+        List<Clan> clans = new ArrayList<>();
+        try {
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setAction(Akcije.VRATI_SVE_CLANOVE);
+            out.writeObject(requestObj);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            if (responseObj.getStatus() == EnumResponseStatus.ERROR) {
+                throw new Exception(responseObj.getMessage());
+            }
+            clans = (List<Clan>) responseObj.getObject();
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
+        return clans;
     }
 }

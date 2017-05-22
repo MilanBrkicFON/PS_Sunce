@@ -9,22 +9,24 @@ import domen.Clan;
 import domen.Mesto;
 import domen.Trener;
 import domen.Trening;
+import java.net.Socket;
 
 /**
  *
  * @author Milan
  */
 public class Memory {
-    
+
     private static Memory instance;
-    
+    private Socket socket;
+
     private Object obj;
-    
-    private Memory(){
-        
+
+    private Memory() {
+
     }
-    
-    public static Memory getInstance(){
+
+    public static Memory getInstance() {
         if (instance == null) {
             instance = new Memory();
         }
@@ -41,6 +43,12 @@ public class Memory {
         this.obj = obj;
     }
 
+    public Socket getSocket() {
+        return socket;
+    }
 
-   
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
 }

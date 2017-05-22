@@ -5,15 +5,16 @@
  */
 package forma;
 
-import db.Util;
 import domen.Clan;
 import forma.panel.PanelPrikazClanova;
 import forma.panel.PanelZaPrikazTreninga;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +22,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import kontroler.Kontroler;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import status.EnumResponseStatus;
+import util.Akcije;
 
 /**
  *
@@ -269,13 +274,31 @@ public class FPocetna extends javax.swing.JFrame {
     private void jbtnPrikaziClanoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziClanoveActionPerformed
         vratiNaPocetnu();
         try {
-            List<Clan> clanovi = Kontroler.getInstance().vratiSveClanove();
-            TabelaModelPrikazIIzmenaClan model = new TabelaModelPrikazIIzmenaClan(clanovi);
-            JPanel panel = new PanelPrikazClanova(model);
-            jPanel2.setVisible(false);
-            getContentPane().add(panel);
-            panel.setVisible(true);
-           // pack();
+            ObjectOutputStream out;
+            ObjectInputStream in;
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+
+            RequestObject request = new RequestObject();
+            request.setAction(Akcije.VRATI_SVE_CLANOVE);
+            out.writeObject(request);
+
+            in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+            
+            if (response.getStatus() == EnumResponseStatus.OK) {
+                List<Clan> clanovi = (List<Clan>) response.getObject();
+                TabelaModelPrikazIIzmenaClan model = new TabelaModelPrikazIIzmenaClan(clanovi);
+                JPanel panel = new PanelPrikazClanova(model);
+                jPanel2.setVisible(false);
+                getContentPane().add(panel);
+                panel.setVisible(true);
+            } else {
+                throw new Exception(response.getMessage());
+            }
+            // pack();
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
@@ -315,10 +338,21 @@ public class FPocetna extends javax.swing.JFrame {
     }
 
     private void postaviStatus() throws Exception {
-
+        ObjectOutputStream out;
+        ObjectInputStream in;
         try {
-            Kontroler.getInstance().uspostaviKonekcijuNaBazu();
-            if (Util.getInstance().isConnectedStatus()) {
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+
+            RequestObject request = new RequestObject();
+            request.setAction(Akcije.USPOSTAVI_KONEKCIJU_NA_BAZU);
+
+            out.writeObject(request);
+
+            in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+
+            if (response.getStatus() == EnumResponseStatus.OK) {
                 statusKonekcije.setText("Povezani ste na bazu.");
                 statusKonekcije.setForeground(new Color(0, 153, 51));
             } else {
@@ -326,6 +360,7 @@ public class FPocetna extends javax.swing.JFrame {
                 statusKonekcije.setForeground(Color.red);
             }
         } catch (IOException ex) {
+            ex.printStackTrace();
             statusKonekcije.setText("Niste povezani na bazu. (File -> Konekcija sa bazom)");
             statusKonekcije.setForeground(Color.red);
         }
