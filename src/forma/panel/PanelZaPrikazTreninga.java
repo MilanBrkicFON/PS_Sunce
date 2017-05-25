@@ -324,14 +324,15 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja clanova.", "Ucitavanje claniva", JOptionPane.ERROR_MESSAGE);
             }
-            jListTrener.setModel(new ListModelTrener(treneri));
-            jListClanova.setModel(new ListModelClanovi(clanovi));
             try {
+                jListTrener.setModel(new ListModelTrener(treneri));
+                jListClanova.setModel(new ListModelClanovi(clanovi));
+
                 int popunjenost = new BigDecimal((clanovi.size() * 100.0) / treneri.get(0).getSport().getMaxBrClanova()).setScale(0, RoundingMode.HALF_UP).intValue();
                 jProgressBarPopunjenostTreninga.setValue(popunjenost);
                 System.out.println("Popunjenost " + (popunjenost));
             } catch (Exception e) {
-
+                JOptionPane.showMessageDialog(this, e.getMessage());
             }
         } else {
             JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!");

@@ -17,7 +17,7 @@ public class TableModelPrikazVreme extends AbstractTableModel {
 
     private final List<Trening> treninzi;
     private final String[] title = {"vreme od", "vreme do"};
-    
+
     public TableModelPrikazVreme(List<Trening> treninzi) {
         this.treninzi = treninzi;
     }
@@ -26,10 +26,7 @@ public class TableModelPrikazVreme extends AbstractTableModel {
     public String getColumnName(int column) {
         return title[column];
     }
-    
-    
-    
-    
+
     @Override
     public int getRowCount() {
         return treninzi == null ? 0 : treninzi.size();

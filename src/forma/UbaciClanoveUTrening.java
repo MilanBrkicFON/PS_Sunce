@@ -126,7 +126,6 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         List<Clan> kopija = clanovi;
         List<Clan> filteredClanovi = filterList(searchedValue, kopija);
         TabelaModelPrikazClan model = (TabelaModelPrikazClan) panel.getjTable1().getModel();
-        //System.out.println("Filtered clanovi size:----" + filteredClanovi.size());
         model.setClanovi(filteredClanovi);
     }//GEN-LAST:event_jTxtPretragaKeyReleased
 

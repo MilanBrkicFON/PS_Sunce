@@ -5,7 +5,6 @@
  */
 package main;
 
-import java.io.IOException;
 import javax.swing.JOptionPane;
 import klijent.Klijent;
 
@@ -25,7 +24,7 @@ public class Main {
         try {
             Klijent klijent = new Klijent();
             klijent.poveziSeSaServerom();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Greska",JOptionPane.ERROR_MESSAGE);
         }

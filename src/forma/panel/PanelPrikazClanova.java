@@ -249,7 +249,8 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVA_MESTA);
             out.writeObject(requestObj);
-
+            out.flush();
+            
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
             ResponseObject responseObj = (ResponseObject) in.readObject();

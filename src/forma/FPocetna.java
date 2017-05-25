@@ -348,7 +348,7 @@ public class FPocetna extends javax.swing.JFrame {
             request.setAction(Akcije.USPOSTAVI_KONEKCIJU_NA_BAZU);
 
             out.writeObject(request);
-
+            out.flush();
             in = new ObjectInputStream(socket.getInputStream());
             ResponseObject response = (ResponseObject) in.readObject();
 

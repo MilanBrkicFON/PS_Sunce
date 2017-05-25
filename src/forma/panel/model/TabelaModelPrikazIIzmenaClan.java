@@ -10,6 +10,7 @@ import domen.Mesto;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,21 +24,34 @@ import kontroler.Kontroler;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
+import status.EnumResponseStatus;
 import util.Akcije;
 
 /**
  *
  * @author Milan
  */
-public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi {
+public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements OsluskivacClanovi,Serializable {
 
     private List<Clan> clanovi;
     private final String[] naslov;
-    private boolean promenjen = false;
 
-    public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) {
+    public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) throws IOException, ClassNotFoundException, Exception {
         this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad"};
         this.clanovi = clanovi;
+        
+//        Socket s = Memory.getInstance().getSocket();
+//        ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+//        RequestObject req = new RequestObject(this, Akcije.POSTAVI_OSLUSKIVACA); //imao sam problem da posaljem objekat tipa OsluskivacClanovi!
+//        out.writeObject(req);                                                       
+//        out.flush();
+//        
+//        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+//        ResponseObject r = (ResponseObject) in.readObject();
+//        if(r.getStatus() == EnumResponseStatus.ERROR){
+//            throw new Exception(r.getMessage());
+//        }
+        
         Kontroler.getInstance().addListener((OsluskivacClanovi) this);
         System.out.println("-------------------------------------------------");
                 

@@ -7,6 +7,7 @@ package klijent;
 
 import forma.FPocetna;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import radnaMemorija.Memory;
 
@@ -15,8 +16,9 @@ import radnaMemorija.Memory;
  * @author Milan
  */
 public class Klijent {
-    public void poveziSeSaServerom() throws IOException{
-        Socket socket = new Socket("localhost", 12321);
+    public void poveziSeSaServerom() throws Exception{
+        InetAddress adress = InetAddress.getByName("169.254.230.111");
+        Socket socket = new Socket(adress, 12321);
         
         System.out.println("Klijent se povezao sa serverom");
         Memory.getInstance().setSocket(socket);
