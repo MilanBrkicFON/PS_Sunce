@@ -6,9 +6,12 @@
 package forma;
 
 import domen.Clan;
+import domen.Trener;
 import forma.panel.PanelPrikazClanova;
+import forma.panel.PanelPrikazTrenera;
 import forma.panel.PanelZaPrikazTreninga;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
+import forma.panel.model.TabelaModelPrikazIIzmenaTrener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.IOException;
@@ -71,6 +74,7 @@ public class FPocetna extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemKreirajClana = new javax.swing.JMenuItem();
+        jMenuItemKreirajTrenera = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemKonekcijaSaBazom = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -104,6 +108,11 @@ public class FPocetna extends javax.swing.JFrame {
 
         jbtnPrikaziTrenere.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_peoples-coach-trainer-whistle-hat-3372d5f289eaf534-64x64.png"))); // NOI18N
         jbtnPrikaziTrenere.setToolTipText("Prikazi trenere");
+        jbtnPrikaziTrenere.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnPrikaziTrenereActionPerformed(evt);
+            }
+        });
 
         jbtnPrikaziPocetnu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_arrow-back-128.png"))); // NOI18N
         jbtnPrikaziPocetnu.setToolTipText("Pocetna");
@@ -201,6 +210,14 @@ public class FPocetna extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItemKreirajClana);
+
+        jMenuItemKreirajTrenera.setText("Kreiraj trenera");
+        jMenuItemKreirajTrenera.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemKreirajTreneraActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItemKreirajTrenera);
         jMenu1.add(jSeparator1);
 
         jMenuItemKonekcijaSaBazom.setText("Konekcija sa bazom");
@@ -304,6 +321,48 @@ public class FPocetna extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jbtnPrikaziClanoveActionPerformed
 
+    private void jMenuItemKreirajTreneraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemKreirajTreneraActionPerformed
+        try {
+            UnosTrenera di = new UnosTrenera(this, true);
+            di.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex, "Greska!", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemKreirajTreneraActionPerformed
+
+    private void jbtnPrikaziTrenereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziTrenereActionPerformed
+        vratiNaPocetnu();
+        try {
+            ObjectOutputStream out;
+            ObjectInputStream in;
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+
+            RequestObject request = new RequestObject();
+            request.setAction(Akcije.VRATI_SVE_TRENERE);
+            out.writeObject(request);
+
+            in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject response = (ResponseObject) in.readObject();
+            
+            if (response.getStatus() == EnumResponseStatus.OK) {
+                List<Trener> treneri = (List<Trener>) response.getObject();
+                TabelaModelPrikazIIzmenaTrener model = new TabelaModelPrikazIIzmenaTrener(treneri);
+                JPanel panel = new PanelPrikazTrenera(model);
+                jPanel2.setVisible(false);
+                getContentPane().add(panel);
+                panel.setVisible(true);
+            } else {
+                throw new Exception(response.getMessage());
+            }
+            // pack();
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_jbtnPrikaziTrenereActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -313,6 +372,7 @@ public class FPocetna extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemKonekcijaSaBazom;
     private javax.swing.JMenuItem jMenuItemKreirajClana;
+    private javax.swing.JMenuItem jMenuItemKreirajTrenera;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelIkonice;
     private javax.swing.JPopupMenu.Separator jSeparator1;

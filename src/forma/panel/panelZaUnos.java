@@ -79,8 +79,8 @@ public class panelZaUnos extends javax.swing.JPanel implements IPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(LabelaError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(LabelaNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LabelaNaziv, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -158,7 +158,7 @@ public class panelZaUnos extends javax.swing.JPanel implements IPanel {
 
     @Override
     public boolean proveri() {
-        if (this.jTxtField.getText().isEmpty()) {
+        if (this.jTxtField.getText().isEmpty() || this.jTxtField.getText().equalsIgnoreCase("format: dd-mm-yyyy")) {
             //this.LabelaError.setText("Obavezno polje.");
             jPanel1.setBorder(new LineBorder(Color.RED, 2));
             return false;

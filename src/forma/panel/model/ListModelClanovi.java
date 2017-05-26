@@ -13,13 +13,13 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.util.List;
 import javax.swing.AbstractListModel;
-import osluskivac.OsluskivacClanovi;
 import kontroler.Kontroler;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import status.EnumResponseStatus;
 import util.Akcije;
+import osluskivac.OsluskivacClanovi;
 
 /**
  *
@@ -62,7 +62,7 @@ public class ListModelClanovi extends AbstractListModel<Clan> implements Osluski
     }
  
     @Override
-    public void oDodajClana(Clan clan) {
+    public void oDodajClan(Clan clan) {
        clanovi.add(clan);
         fireContentsChanged(this, 0, getSize());
     }

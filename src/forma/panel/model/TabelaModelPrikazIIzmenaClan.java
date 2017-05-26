@@ -19,13 +19,13 @@ import java.util.logging.Logger;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import osluskivac.OsluskivacClanovi;
 import kontroler.Kontroler;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import status.EnumResponseStatus;
 import util.Akcije;
+import osluskivac.OsluskivacClanovi;
 
 /**
  *
@@ -162,7 +162,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     }
 
     @Override
-    public void oDodajClana(Clan clan) {
+    public void oDodajClan(Clan clan) {
         try {
             Socket socket = Memory.getInstance().getSocket();
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());

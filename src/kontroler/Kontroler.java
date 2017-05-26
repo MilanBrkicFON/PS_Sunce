@@ -50,7 +50,7 @@ public class Kontroler {
 
     public void obavestiSveDodavanje(Clan clan) {
         for (OsluskivacClanovi listener : listeners) {
-            listener.oDodajClana(clan);
+            listener.oDodajClan(clan);
         }
     }
 
