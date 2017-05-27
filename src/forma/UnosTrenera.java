@@ -5,8 +5,6 @@
  */
 package forma;
 
-import domen.Clan;
-import domen.Mesto;
 import domen.Sport;
 import domen.Trener;
 import java.awt.event.ActionEvent;
@@ -14,14 +12,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,16 +25,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.plaf.FileChooserUI;
+import radnaMemorija.KontrolaOsluskivac;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import util.Akcije;
-import util.UtilExtension;
+import utilFileChooser.UtilExtension;
 
 /**
  *
@@ -267,6 +262,7 @@ public class UnosTrenera extends javax.swing.JDialog {
 
                 if (responseObj.getStatus() == status.EnumResponseStatus.OK) {
                     JOptionPane.showMessageDialog(this, "Uspešno ste dodali trenera.");
+                    KontrolaOsluskivac.getInstance().obavestiSveDodavanje(trener);//obavestava sve osluskivace da je novi trener dodat!
                     int i = JOptionPane.showConfirmDialog(this, "Da li želite da dodate još trenera?");
                     if (i == 1) {
                         this.setVisible(false);

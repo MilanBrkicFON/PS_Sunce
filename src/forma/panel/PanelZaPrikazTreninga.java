@@ -63,6 +63,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jListTrener = new javax.swing.JList<>();
+        jBtnDodajTreneraNaTrening = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jListClanova = new javax.swing.JList<>();
@@ -109,7 +110,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jcboxDatumTreninga, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -135,19 +136,33 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         jListTrener.setEnabled(false);
         jScrollPane2.setViewportView(jListTrener);
 
+        jBtnDodajTreneraNaTrening.setIcon(new javax.swing.ImageIcon("C:\\Users\\Milan\\Documents\\NetBeansProjects\\SeminarksiPS\\KlijentskaAplSKC\\jpg\\rsz_greenadd.png")); // NOI18N
+        jBtnDodajTreneraNaTrening.setToolTipText("dodaj clana");
+        jBtnDodajTreneraNaTrening.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnDodajTreneraNaTreningActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnDodajTreneraNaTrening, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jBtnDodajTreneraNaTrening)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -172,7 +187,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBtnDodajClanaNaTrening, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
@@ -353,10 +368,15 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jBtnDodajClanaNaTreningActionPerformed
 
+    private void jBtnDodajTreneraNaTreningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDodajTreneraNaTreningActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnDodajTreneraNaTreningActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Centralni;
     private javax.swing.JButton jBtnDodajClanaNaTrening;
+    private javax.swing.JButton jBtnDodajTreneraNaTrening;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList<Clan> jListClanova;
     private javax.swing.JList<Trener> jListTrener;

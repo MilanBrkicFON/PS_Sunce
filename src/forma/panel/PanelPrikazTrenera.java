@@ -7,8 +7,7 @@ package forma.panel;
 
 import domen.Sport;
 import domen.Trener;
-import forma.UnosClana;
-import forma.panel.model.TabelaModelPrikazIIzmenaClan;
+import forma.UnosTrenera;
 import forma.panel.model.TabelaModelPrikazIIzmenaTrener;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,6 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import radnaMemorija.KontrolaOsluskivac;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
@@ -64,6 +64,8 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         jBtnSave = new javax.swing.JButton();
         jBtnObrisi = new javax.swing.JButton();
         jBtnDodaj = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -104,12 +106,26 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 3, 24)); // NOI18N
+        jLabel1.setText("Treneri SRC Sunce");
+
+        jButton1.setText("Izmeni");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelHeaderLayout = new javax.swing.GroupLayout(jPanelHeader);
         jPanelHeader.setLayout(jPanelHeaderLayout);
         jPanelHeaderLayout.setHorizontalGroup(
             jPanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelHeaderLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBtnDodaj, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jBtnObrisi, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -118,12 +134,17 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         );
         jPanelHeaderLayout.setVerticalGroup(
             jPanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelHeaderLayout.createSequentialGroup()
+            .addGroup(jPanelHeaderLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBtnDodaj)
-                    .addComponent(jBtnObrisi)
-                    .addComponent(jBtnSave)))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelHeaderLayout.createSequentialGroup()
+                        .addGroup(jPanelHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jBtnDodaj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jBtnObrisi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jBtnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -143,19 +164,19 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jPanelHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBtnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDodajActionPerformed
-        TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
+        TabelaModelPrikazIIzmenaTrener model = (TabelaModelPrikazIIzmenaTrener) jTable1.getModel();
 
         try {
-            UnosClana unosClana = new UnosClana(null, true);
-            unosClana.setVisible(true);
+            UnosTrenera unosTrenera = new UnosTrenera(null, true);
+            unosTrenera.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(PanelPrikazTrenera.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -185,6 +206,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
                 if (response.getStatus() == EnumResponseStatus.ERROR) {
                     throw new Exception(response.getMessage());
                 }
+                KontrolaOsluskivac.getInstance().obavestiSveBrisanje(trener);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Brisanje trenera", JOptionPane.ERROR_MESSAGE);
             }
@@ -207,15 +229,20 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             }
             List<Trener> promenjeniTreneri = (List<Trener>) response.getObject();
             for (Trener clan : promenjeniTreneri) {
-                promenjeni += "- " + clan.getTrenerID()+ '\n';
+                promenjeni += "- " + clan.getTrenerID() + '\n';
             }
             JOptionPane.showMessageDialog(this, promenjeni);
-            TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
+            TabelaModelPrikazIIzmenaTrener model = (TabelaModelPrikazIIzmenaTrener) jTable1.getModel();
             model.fireTableDataChanged();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }//GEN-LAST:event_jBtnSaveActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jTable1.setEnabled(true);
+        jTable1.setModel(jTable1.getModel());
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     public JPanel getHeader() {
         return jPanelHeader;
@@ -225,6 +252,8 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
     private javax.swing.JButton jBtnDodaj;
     private javax.swing.JButton jBtnObrisi;
     private javax.swing.JButton jBtnSave;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelHeader;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
@@ -232,7 +261,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
 
     private void postaviModel(TableModel model) {
         try {
-
+            jTable1.setEnabled(false);
             jTable1.setModel(model);
 
             TableRowSorter<TableModel> sorter = new TableRowSorter<>(jTable1.getModel());
@@ -248,20 +277,20 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             Socket socket = Memory.getInstance().getSocket();
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
-            requestObj.setAction(Akcije.VRATI_SVA_MESTA);
+            requestObj.setAction(Akcije.VRATI_SVA_SPORTOVE);
             out.writeObject(requestObj);
             out.flush();
-            
+
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
             ResponseObject responseObj = (ResponseObject) in.readObject();
             List<Sport> sportovi = (List<Sport>) responseObj.getObject();
 
             if (!sportovi.isEmpty()) {
-                JComboBox jcbMesta = new JComboBox<>(sportovi.toArray());
+                JComboBox jcbSprtovi = new JComboBox<>(sportovi.toArray());
                 TableColumnModel tcm = jTable1.getColumnModel();
-                TableColumn tc = tcm.getColumn(7);
-                tc.setCellEditor(new DefaultCellEditor(jcbMesta));
+                TableColumn tc = tcm.getColumn(5);
+                tc.setCellEditor(new DefaultCellEditor(jcbSprtovi));
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());

@@ -219,7 +219,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
         if (!tested) {
             try {
                 testirajKonekciju();
-                status = " Uspesna konekcija na bazu. URL: " + Util.getInstance().getUrl();
+                status = " Uspesna konekcija na bazu.";
                 statusKonekcije.setText(status);
             } catch (IOException ex) {
 
@@ -227,12 +227,8 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
 
             }
         } else {
-            try {
-                status = " Uspesna konekcija na bazu. URL: " + Util.getInstance().getUrl();
-                statusKonekcije.setText(status);
-            } catch (IOException ex) {
-                Logger.getLogger(JDialogUnosParametraZaBazu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            status = " Uspesna konekcija na bazu." ;
+            statusKonekcije.setText(status);
 
         }
     }//GEN-LAST:event_jBtnPoveziActionPerformed
@@ -271,6 +267,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
             
             RequestObject request = new RequestObject();
             request.setAction(Akcije.USPOSTAVI_KONEKCIJU_NA_BAZU);
+            request.setObject(Util.getInstance());
             out.writeObject(request);
             
             in = new ObjectInputStream(socket.getInputStream());

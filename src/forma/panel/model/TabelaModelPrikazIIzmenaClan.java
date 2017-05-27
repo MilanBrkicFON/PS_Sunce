@@ -16,16 +16,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import kontroler.Kontroler;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
-import status.EnumResponseStatus;
 import util.Akcije;
 import osluskivac.OsluskivacClanovi;
+import radnaMemorija.KontrolaOsluskivac;
 
 /**
  *
@@ -39,22 +36,8 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     public TabelaModelPrikazIIzmenaClan(List<Clan> clanovi) throws IOException, ClassNotFoundException, Exception {
         this.naslov = new String[]{"ClanID", "Ime", "Prezime", "Ime roditelja", "Datum rodjenja", "Pol", "Godina upisa", "Grad"};
         this.clanovi = clanovi;
+        KontrolaOsluskivac.getInstance().addListener(this);
         
-//        Socket s = Memory.getInstance().getSocket();
-//        ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-//        RequestObject req = new RequestObject(this, Akcije.POSTAVI_OSLUSKIVACA); //imao sam problem da posaljem objekat tipa OsluskivacClanovi!
-//        out.writeObject(req);                                                       
-//        out.flush();
-//        
-//        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-//        ResponseObject r = (ResponseObject) in.readObject();
-//        if(r.getStatus() == EnumResponseStatus.ERROR){
-//            throw new Exception(r.getMessage());
-//        }
-        
-        Kontroler.getInstance().addListener((OsluskivacClanovi) this);
-        System.out.println("-------------------------------------------------");
-                
     }
 
     @Override
@@ -167,7 +150,7 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
             Socket socket = Memory.getInstance().getSocket();
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
-            requestObj.setAction(Akcije.VRATI_MAX_ID);
+            requestObj.setAction(Akcije.VRATI_MAX_ID_CLAN);
             out.writeObject(requestObj);
 
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());

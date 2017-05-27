@@ -6,20 +6,11 @@
 package forma.panel.model;
 
 import domen.Clan;
-import domen.Trener;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
 import java.util.List;
 import javax.swing.AbstractListModel;
-import kontroler.Kontroler;
-import radnaMemorija.Memory;
-import request.RequestObject;
-import response.ResponseObject;
-import status.EnumResponseStatus;
-import util.Akcije;
 import osluskivac.OsluskivacClanovi;
+import radnaMemorija.KontrolaOsluskivac;
 
 /**
  *
@@ -27,24 +18,11 @@ import osluskivac.OsluskivacClanovi;
  */
 public class ListModelClanovi extends AbstractListModel<Clan> implements OsluskivacClanovi,Serializable{
 
-    private List<Clan> clanovi;
+    private final List<Clan> clanovi;
 
     public ListModelClanovi(List<Clan> clanovi) throws Exception {
         this.clanovi = clanovi;
-        
-//        Socket s = Memory.getInstance().getSocket();
-//        
-//        ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-//        OsluskivacClanovi os = this;
-//        RequestObject req = new RequestObject(os, Akcije.POSTAVI_OSLUSKIVACA);
-//        out.writeObject(req);
-//        out.flush();
-//        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-//        ResponseObject r = (ResponseObject) in.readObject();
-//        if(r.getStatus() == EnumResponseStatus.ERROR){
-//            throw new Exception(r.getMessage());
-//        }
-         Kontroler.getInstance().addListener(this);
+        KontrolaOsluskivac.getInstance().addListener(this);
     }
 
     @Override

@@ -8,13 +8,21 @@ package forma.panel.model;
 import domen.Sport;
 import domen.Trener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import kontroler.Kontroler;
-import osluskivac.OsluskivacClanovi;
 import osluskivac.OsluskivacTreneri;
+import radnaMemorija.KontrolaOsluskivac;
+import radnaMemorija.Memory;
+import request.RequestObject;
+import response.ResponseObject;
+import util.Akcije;
 
 /**
  *
@@ -28,21 +36,7 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
     public TabelaModelPrikazIIzmenaTrener(List<Trener> treneri) throws IOException, ClassNotFoundException, Exception {
         this.naslov = new String[]{"TrenerID", "Ime", "Prezime", "Datum rodjenja", "Godine rada", "Sport"};
         this.treneri = treneri;
-
-//        Socket s = Memory.getInstance().getSocket();
-//        ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-//        RequestObject req = new RequestObject(this, Akcije.POSTAVI_OSLUSKIVACA); //imao sam problem da posaljem objekat tipa OsluskivacClanovi!
-//        out.writeObject(req);                                                       
-//        out.flush();
-//        
-//        ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-//        ResponseObject r = (ResponseObject) in.readObject();
-//        if(r.getStatus() == EnumResponseStatus.ERROR){
-//            throw new Exception(r.getMessage());
-//        }
-        //Kontroler.getInstance().addListener((OsluskivacClanovi) this);
-        System.out.println("-------------------------------------------------");
-
+        KontrolaOsluskivac.getInstance().addListener(this);
     }
 
     @Override
@@ -60,13 +54,13 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
     }
 
     @Override
-    public int getColumnCount() {
-        return naslov.length;
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex != 0;
     }
 
     @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return super.getColumnClass(columnIndex); //To change body of generated methods, choose Tools | Templates.
+    public int getColumnCount() {
+        return naslov.length;
     }
 
     @Override
@@ -131,11 +125,6 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
         fireTableDataChanged();
     }
 
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex != 0;
-    }
-
     private boolean promeniStatus(String ime, Object aValue) {
         if (!ime.equals((String) aValue)) {
             fireTableDataChanged();
@@ -146,13 +135,33 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
 
     @Override
     public void oDodajTrenera(Trener trener) {
-        treneri.add(trener);
-        fireTableDataChanged();
+        ObjectOutputStream out = null;
+        try {
+            Socket socket = Memory.getInstance().getSocket();
+            out = new ObjectOutputStream(socket.getOutputStream());
+            RequestObject requestObj = new RequestObject();
+            requestObj.setAction(Akcije.VRATI_MAX_ID_TRENER);
+            out.writeObject(requestObj);
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            ResponseObject responseObj = (ResponseObject) in.readObject();
+            int max = (int) responseObj.getObject();
+
+            trener.setTrenerID(max);
+
+            treneri.add(trener);
+            fireTableDataChanged();
+
+        } catch (IOException ex) {
+            Logger.getLogger(TabelaModelPrikazIIzmenaTrener.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TabelaModelPrikazIIzmenaTrener.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void oObrisiTrenera(Trener trener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        treneri.remove(trener);
+        fireTableDataChanged();
     }
 
 }

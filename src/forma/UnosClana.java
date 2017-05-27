@@ -24,6 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
+import radnaMemorija.KontrolaOsluskivac;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
@@ -168,6 +169,9 @@ public class UnosClana extends javax.swing.JDialog {
                 
                 if(responseObj.getStatus() == status.EnumResponseStatus.OK){
                     JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana.");
+                    
+                    KontrolaOsluskivac.getInstance().obavestiSveDodavanje(clan); // Obavestava sve forme koje implementiraju interfejs OsluskivacClanovi da je dodat clan.
+                    
                     int i = JOptionPane.showConfirmDialog(this, "Da li želite da dodate još članova?");
                     if (i == 1) {
                         this.setVisible(false);
