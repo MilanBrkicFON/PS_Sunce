@@ -173,8 +173,6 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
 
         int rowSelected = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-        System.out.println("Selected row index to model: " + rowSelected);
-        System.out.println(model.getClanovi().get(rowSelected));
 
         Clan clan = model.getClanovi().get(rowSelected);
         int odg = JOptionPane.showConfirmDialog(this, "Da li ste sigurni da zelite da obrisete clana:\n " + clan, "Prihvatam uslove", JOptionPane.YES_NO_OPTION);
@@ -192,6 +190,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
                 if (response.getStatus() == EnumResponseStatus.ERROR) {
                     throw new Exception(response.getMessage());
                 }
+                JOptionPane.showMessageDialog(this, "Obrisali ste clana! ", "Brisanje clana", JOptionPane.INFORMATION_MESSAGE);
                 KontrolaOsluskivac.getInstance().obavestiSveBrisanje(clan);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Brisanje clana", JOptionPane.ERROR_MESSAGE);

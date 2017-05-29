@@ -92,6 +92,12 @@ public class UnosTrenera extends javax.swing.JDialog {
 
         jLabel3.setText("* Sport: ");
 
+        jComboBoxSport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxSportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelGodineRadaLayout = new javax.swing.GroupLayout(PanelGodineRada);
         PanelGodineRada.setLayout(PanelGodineRadaLayout);
         PanelGodineRadaLayout.setHorizontalGroup(
@@ -345,6 +351,10 @@ public class UnosTrenera extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_jbtnDodajCvKrozFajlActionPerformed
+
+    private void jComboBoxSportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSportActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxSportActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel MainPanel;
