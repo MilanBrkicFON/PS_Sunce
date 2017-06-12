@@ -13,15 +13,13 @@ import forma.panel.model.ListModelClanovi;
 import forma.panel.model.ListModelTrener;
 import forma.panel.model.TableModelPrikazVreme;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.Socket;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import komunikacija.Komunikacija;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
@@ -69,6 +67,8 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         jListClanova = new javax.swing.JList<>();
         jBtnDodajClanaNaTrening = new javax.swing.JButton();
 
+        setPreferredSize(new java.awt.Dimension(727, 437));
+
         jPanel3.setMaximumSize(new java.awt.Dimension(32767, 100));
 
         jcboxDatumTreninga.addActionListener(new java.awt.event.ActionListener() {
@@ -110,7 +110,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jcboxDatumTreninga, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -133,10 +133,11 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Treneri"));
 
         jListTrener.setFont(new java.awt.Font("Times New Roman", 0, 13)); // NOI18N
+        jListTrener.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jListTrener.setEnabled(false);
         jScrollPane2.setViewportView(jListTrener);
 
-        jBtnDodajTreneraNaTrening.setIcon(new javax.swing.ImageIcon("C:\\Users\\Milan\\Documents\\NetBeansProjects\\SeminarksiPS\\KlijentskaAplSKC\\jpg\\rsz_greenadd.png")); // NOI18N
+        jBtnDodajTreneraNaTrening.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_greenadd.png"))); // NOI18N
         jBtnDodajTreneraNaTrening.setToolTipText("dodaj clana");
         jBtnDodajTreneraNaTrening.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,10 +151,10 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jBtnDodajTreneraNaTrening, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,7 +174,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         jListClanova.setEnabled(false);
         jScrollPane1.setViewportView(jListClanova);
 
-        jBtnDodajClanaNaTrening.setIcon(new javax.swing.ImageIcon("C:\\Users\\Milan\\Documents\\NetBeansProjects\\SeminarksiPS\\KlijentskaAplSKC\\jpg\\rsz_greenadd.png")); // NOI18N
+        jBtnDodajClanaNaTrening.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_greenadd.png"))); // NOI18N
         jBtnDodajClanaNaTrening.setToolTipText("dodaj clana");
         jBtnDodajClanaNaTrening.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,7 +220,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -274,16 +275,12 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void jcboxDatumTreningaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboxDatumTreningaActionPerformed
 
         try {
-            Socket socket = Memory.getInstance().getSocket();
-
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setObject((LocalDate) jcboxDatumTreninga.getSelectedItem());
             requestObj.setAction(Akcije.VRATI_VREMENA);
-            out.writeObject(requestObj);
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject response = (ResponseObject) in.readObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
             treninzi = (List<Trening>) response.getObject();
 
             /*Kontroler.getInstance().vratiSvaVremena((LocalDate) jcboxDatumTreninga.getSelectedItem());*/
@@ -304,17 +301,14 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
             Memory.getInstance().setObj(trening);
             List<Trener> treneri = new ArrayList<>();
             List<Clan> clanovi = new ArrayList<>();
-            Socket socket = Memory.getInstance().getSocket();
             try {
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 RequestObject requestObj = new RequestObject();
 
-                ObjectInputStream in;
                 requestObj.setAction(Akcije.VRATI_SVE_TRENERE_ZA_TRENING);
                 requestObj.setObject(trening);
-                out.writeObject(requestObj);
-                in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject responseObj = (ResponseObject) in.readObject();
+                Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+
+                ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
                 treneri = (List<Trener>) responseObj.getObject();
                 /*Kontroler.getInstance().vratiSveTrenere(trening);*/
                 trening.setTreneri(treneri);
@@ -322,16 +316,13 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja trenera.", "Ucitavanje trenera", JOptionPane.ERROR_MESSAGE);
             }
             try {
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 RequestObject requestObj = new RequestObject();
 
-                ObjectInputStream in;
                 requestObj.setAction(Akcije.VRATI_SVE_CLANOVE_ZA_TRENING);
                 requestObj.setObject(trening);
-                out.writeObject(requestObj);
+                Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-                in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject responseObj = (ResponseObject) in.readObject();
+                ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
 
                 clanovi = (List<Clan>) responseObj.getObject();
                 /*Kontroler.getInstance().vratiSveClanove(trening);*/
@@ -402,16 +393,12 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     private void ucitajListuTreninga() throws Exception {
         jcboxDatumTreninga.removeAllItems();
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
 
-            ObjectInputStream in;
             requestObj.setAction(Akcije.VRATI_DATUME);
-            out.writeObject(requestObj);
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             List<LocalDate> datumi = (List<LocalDate>) responseObj.getObject();
 
             datumi.stream().forEach((da) -> {

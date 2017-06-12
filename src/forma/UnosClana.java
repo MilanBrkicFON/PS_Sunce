@@ -11,9 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,8 +21,8 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
+import komunikacija.Komunikacija;
 import radnaMemorija.KontrolaOsluskivac;
-import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import util.Akcije;
@@ -141,7 +138,6 @@ public class UnosClana extends javax.swing.JDialog {
         panelZaUnosRoditelj.getjPanel1().setBorder(null);
         if (izvrsiProveru() & datumskaProvera()) {
 
-            ObjectOutputStream out = null;
             try {
                 String ime = panelZaUnosIme.getJtxtFieldText();
                 String prezime = panelZaUnosPrezime.getJtxtFieldText();
@@ -152,26 +148,22 @@ public class UnosClana extends javax.swing.JDialog {
                 //Date date = format.parse(panelZaDatumRodj.getJtxtFieldText());
                 LocalDate ld = LocalDate.parse(datumRodj.subSequence(0, datumRodj.length()), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
                 Mesto mesto = (Mesto) jComboBoxMesto.getSelectedItem();
-                
+
                 Clan clan = new Clan(ime, prezime, imeRoditelja, pol.charAt(0), ld, godinaUpisa, mesto);
-                
-                Socket socket = Memory.getInstance().getSocket();
-                out = new ObjectOutputStream(socket.getOutputStream());
-                
+
                 RequestObject requestObj = new RequestObject();
                 requestObj.setAction(Akcije.UBACI_CLANA);
                 requestObj.setObject(clan);
-                
-                out.writeObject(requestObj);
-                
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject responseObj = (ResponseObject) in.readObject();
-                
-                if(responseObj.getStatus() == status.EnumResponseStatus.OK){
+
+                Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+
+                ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
+
+                if (responseObj.getStatus() == status.EnumResponseStatus.OK) {
                     JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana.");
-                    
+
                     KontrolaOsluskivac.getInstance().obavestiSveDodavanje(clan); // Obavestava sve forme koje implementiraju interfejs OsluskivacClanovi da je dodat clan.
-                    
+
                     int i = JOptionPane.showConfirmDialog(this, "Da li želite da dodate još članova?");
                     if (i == 1) {
                         this.setVisible(false);
@@ -179,14 +171,14 @@ public class UnosClana extends javax.swing.JDialog {
                     if (i == 0) {
                         restartujPolja();
                     }
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(this, responseObj.getMessage(), "Ubacivanje člana", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(UnosClana.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(UnosClana.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Popuni prazna polja");
 
@@ -287,15 +279,11 @@ public class UnosClana extends javax.swing.JDialog {
 
     private void popuniCombo() throws Exception {
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVA_MESTA);
-            out.writeObject(requestObj);
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             List<Mesto> mesta = (List<Mesto>) responseObj.getObject();
             jComboBoxMesto.removeAllItems();
             jComboBoxMesto.setModel(new DefaultComboBoxModel<>());

@@ -9,9 +9,7 @@ import domen.Clan;
 import domen.Mesto;
 import forma.UnosClana;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,8 +25,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import komunikacija.Komunikacija;
 import radnaMemorija.KontrolaOsluskivac;
-import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import status.EnumResponseStatus;
@@ -180,13 +178,10 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         if (odg == 0) {
 
             try {
-                Socket socket = Memory.getInstance().getSocket();
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 RequestObject request = new RequestObject(clan, Akcije.OBRISI_CLANA);
-                out.writeObject(request);
+                Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject response = (ResponseObject) in.readObject();
+                ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
                 if (response.getStatus() == EnumResponseStatus.ERROR) {
                     throw new Exception(response.getMessage());
                 }
@@ -202,13 +197,10 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
         List<Clan> clanoviIzModela = ((TabelaModelPrikazIIzmenaClan) jTable1.getModel()).getClanovi();
         String promenjeni = "Izvrsena je promena podataka nad clanovima sa sledecim id:\n";
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject request = new RequestObject(clanoviIzModela, Akcije.PROMENI_CLANOVE);
-            out.writeObject(request);
+            Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject response = (ResponseObject) in.readObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
             if (response.getStatus() == EnumResponseStatus.ERROR) {
                 throw new Exception(response.getMessage());
             }
@@ -253,17 +245,12 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             sorter.setSortKeys(sortKeys);
             sorter.sort();
 
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVA_MESTA);
-            out.writeObject(requestObj);
-            out.flush();
-            
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ResponseObject responseObj = (ResponseObject) in.readObject();
-            List<Mesto> mesta = (List<Mesto>) responseObj.getObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
+            List<Mesto> mesta = (List<Mesto>) response.getObject();
 
             if (!mesta.isEmpty()) {
                 JComboBox jcbMesta = new JComboBox<>(mesta.toArray());
@@ -271,7 +258,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
                 TableColumn tc = tcm.getColumn(7);
                 tc.setCellEditor(new DefaultCellEditor(jcbMesta));
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }

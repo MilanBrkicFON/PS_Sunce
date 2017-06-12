@@ -17,8 +17,7 @@ import radnaMemorija.Memory;
  */
 public class Klijent {
     public void poveziSeSaServerom() throws Exception{
-        InetAddress adress = InetAddress.getByName("169.254.230.111");
-        Socket socket = new Socket(adress, 12321);
+        Socket socket = new Socket("localhost", 9000);
         
         System.out.println("Klijent se povezao sa serverom");
         Memory.getInstance().setSocket(socket);

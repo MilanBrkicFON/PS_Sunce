@@ -9,9 +9,6 @@ import domen.Sport;
 import domen.Trener;
 import forma.UnosTrenera;
 import forma.panel.model.TabelaModelPrikazIIzmenaTrener;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,8 +24,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import komunikacija.Komunikacija;
 import radnaMemorija.KontrolaOsluskivac;
-import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import status.EnumResponseStatus;
@@ -196,13 +193,10 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         if (odg == 0) {
 
             try {
-                Socket socket = Memory.getInstance().getSocket();
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 RequestObject request = new RequestObject(trener, Akcije.OBRISI_TRENERA);
-                out.writeObject(request);
+                Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject response = (ResponseObject) in.readObject();
+                ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
                 if (response.getStatus() == EnumResponseStatus.ERROR) {
                     throw new Exception(response.getMessage());
                 }
@@ -217,13 +211,10 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         List<Trener> treneriIzModela = ((TabelaModelPrikazIIzmenaTrener) jTable1.getModel()).getTrenere();
         String promenjeni = "Izvrsena je promena podataka nad clanovima sa sledecim id:\n";
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject request = new RequestObject(treneriIzModela, Akcije.PROMENI_TRENERE);
-            out.writeObject(request);
+            Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject response = (ResponseObject) in.readObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
             if (response.getStatus() == EnumResponseStatus.ERROR) {
                 throw new Exception(response.getMessage());
             }
@@ -274,17 +265,12 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             sorter.setSortKeys(sortKeys);
             sorter.sort();
 
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVA_SPORTOVE);
-            out.writeObject(requestObj);
-            out.flush();
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-            ResponseObject responseObj = (ResponseObject) in.readObject();
-            List<Sport> sportovi = (List<Sport>) responseObj.getObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
+            List<Sport> sportovi = (List<Sport>) response.getObject();
 
             if (!sportovi.isEmpty()) {
                 JComboBox jcbSprtovi = new JComboBox<>(sportovi.toArray());

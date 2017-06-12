@@ -8,16 +8,13 @@ package forma.panel.model;
 import domen.Clan;
 import domen.Mesto;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import radnaMemorija.Memory;
+import komunikacija.Komunikacija;
 import request.RequestObject;
 import response.ResponseObject;
 import util.Akcije;
@@ -147,15 +144,11 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
     @Override
     public void oDodajClan(Clan clan) {
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_MAX_ID_CLAN);
-            out.writeObject(requestObj);
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             int max = (int) responseObj.getObject();
             clan.setClanID(max);
             clanovi.add(clan);

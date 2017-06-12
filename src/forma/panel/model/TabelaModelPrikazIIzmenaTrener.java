@@ -8,18 +8,15 @@ package forma.panel.model;
 import domen.Sport;
 import domen.Trener;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.Socket;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
+import komunikacija.Komunikacija;
 import osluskivac.OsluskivacTreneri;
 import radnaMemorija.KontrolaOsluskivac;
-import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import util.Akcije;
@@ -135,15 +132,12 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
 
     @Override
     public void oDodajTrenera(Trener trener) {
-        ObjectOutputStream out = null;
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_MAX_ID_TRENER);
-            out.writeObject(requestObj);
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             int max = (int) responseObj.getObject();
 
             trener.setTrenerID(max);

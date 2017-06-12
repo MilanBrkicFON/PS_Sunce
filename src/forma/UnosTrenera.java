@@ -15,9 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,8 +25,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
+import komunikacija.Komunikacija;
 import radnaMemorija.KontrolaOsluskivac;
-import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
 import util.Akcije;
@@ -239,32 +236,26 @@ public class UnosTrenera extends javax.swing.JDialog {
         panelZaUnosDatumaRodjenja.getjPanel1().setBorder(null);
         if (izvrsiProveru() & datumskaProvera()) {
 
-            ObjectOutputStream out = null;
             try {
                 String ime = panelZaUnosIme.getJtxtFieldText();
                 String prezime = panelZaUnosPrezime.getJtxtFieldText();
                 String datumRodj = panelZaUnosDatumaRodjenja.getJtxtFieldText();
                 int godinaRada = (int) jSpinnerGodRada.getValue();
                 System.out.println("GODINA: " + datumRodj.toUpperCase());
-                
+
                 LocalDate ld = LocalDate.parse(datumRodj, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                
+
                 String cv = jTxtAreaCV.getText();
                 Sport sport = (Sport) jComboBoxSport.getSelectedItem();
 
                 Trener trener = new Trener(ime, prezime, ld, godinaRada, cv, sport);
-
-                Socket socket = Memory.getInstance().getSocket();
-                out = new ObjectOutputStream(socket.getOutputStream());
-
                 RequestObject requestObj = new RequestObject();
                 requestObj.setAction(Akcije.UBACI_TRENERA);
                 requestObj.setObject(trener);
 
-                out.writeObject(requestObj);
+                Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                ResponseObject responseObj = (ResponseObject) in.readObject();
+                ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
 
                 if (responseObj.getStatus() == status.EnumResponseStatus.OK) {
                     JOptionPane.showMessageDialog(this, "Uspešno ste dodali trenera.");
@@ -279,10 +270,8 @@ public class UnosTrenera extends javax.swing.JDialog {
                 } else {
                     JOptionPane.showMessageDialog(this, responseObj.getMessage(), "Ubacivanje trenera", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(UnosTrenera.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UnosTrenera.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Ubacivanje trenera", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Popuni prazna polja");
@@ -326,22 +315,22 @@ public class UnosTrenera extends javax.swing.JDialog {
                 File file = fileChooser.getSelectedFile();
                 br = new BufferedReader(new FileReader(file));
                 String line;
-                String fullText ="";
+                String fullText = "";
                 while ((line = br.readLine()) != null) {
                     fullText = fullText.concat(line + '\n');
                 }
-                
+
                 if (fullText.length() > 1000) {
                     throw new Exception("Biografija je duza od 1000 karaktera. Molimo vas da prosledite kracu verziju biografije.");
                 }
-                
+
                 jTxtAreaCV.append(fullText);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Fajl nije pronadjen", JOptionPane.ERROR_MESSAGE);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Fajl nije pronadjen", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
-                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Fajl nije pronadjen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Fajl nije pronadjen", JOptionPane.ERROR_MESSAGE);
             } finally {
                 try {
                     br.close();
@@ -447,15 +436,11 @@ public class UnosTrenera extends javax.swing.JDialog {
 
     private void popuniCombo() throws Exception {
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVA_SPORTOVE);
-            out.writeObject(requestObj);
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             List<Sport> sportovi = (List<Sport>) responseObj.getObject();
             jComboBoxSport.removeAllItems();
             //jComboBoxSport.setModel(new DefaultComboBoxModel<>());

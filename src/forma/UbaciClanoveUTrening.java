@@ -9,9 +9,7 @@ import domen.Clan;
 import domen.Trening;
 import forma.panel.PanelPrikazClanova;
 import forma.panel.model.TabelaModelPrikazClan;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.List;
@@ -19,7 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import radnaMemorija.Memory;
+import komunikacija.Komunikacija;
+import radnaMemorija.KontrolaOsluskivac;
 import request.RequestObject;
 import response.ResponseObject;
 import status.EnumResponseStatus;
@@ -139,20 +138,18 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
                 } else {
                     try {
-                        Socket socket = Memory.getInstance().getSocket();
-                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                         RequestObject requestObj = new RequestObject();
                         requestObj.setAction(Akcije.DODAJ_CLANA_NA_TRENING);
                         Object[] o = {c, trening};
                         requestObj.setObject(o);
-                        out.writeObject(requestObj);
-                        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                        ResponseObject responseObj = (ResponseObject) in.readObject();
+                        Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+
+                        ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
                         if (responseObj.getStatus() == EnumResponseStatus.ERROR) {
                             throw new Exception(responseObj.getMessage());
                         }
-                        //Kontroler.getInstance().ubaciNaTrening(c, trening);
-
+                        
+                        KontrolaOsluskivac.getInstance().obavestiSveDodavanje(c);
                         JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -201,13 +198,11 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         ObjectOutputStream out = null;
         List<Clan> clans = new ArrayList<>();
         try {
-            Socket socket = Memory.getInstance().getSocket();
-            out = new ObjectOutputStream(socket.getOutputStream());
             RequestObject requestObj = new RequestObject();
             requestObj.setAction(Akcije.VRATI_SVE_CLANOVE);
-            out.writeObject(requestObj);
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject responseObj = (ResponseObject) in.readObject();
+            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+
+            ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             if (responseObj.getStatus() == EnumResponseStatus.ERROR) {
                 throw new Exception(responseObj.getMessage());
             }

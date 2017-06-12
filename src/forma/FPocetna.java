@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import komunikacija.Komunikacija;
 import radnaMemorija.Memory;
 import request.RequestObject;
 import response.ResponseObject;
@@ -291,17 +292,13 @@ public class FPocetna extends javax.swing.JFrame {
     private void jbtnPrikaziClanoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziClanoveActionPerformed
         vratiNaPocetnu();
         try {
-            ObjectOutputStream out;
-            ObjectInputStream in;
-            Socket socket = Memory.getInstance().getSocket();
-            out = new ObjectOutputStream(socket.getOutputStream());
 
             RequestObject request = new RequestObject();
             request.setAction(Akcije.VRATI_SVE_CLANOVE);
-            out.writeObject(request);
+            
+            Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-            in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject response = (ResponseObject) in.readObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
             
             if (response.getStatus() == EnumResponseStatus.OK) {
                 List<Clan> clanovi = (List<Clan>) response.getObject();
@@ -333,17 +330,12 @@ public class FPocetna extends javax.swing.JFrame {
     private void jbtnPrikaziTrenereActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziTrenereActionPerformed
         vratiNaPocetnu();
         try {
-            ObjectOutputStream out;
-            ObjectInputStream in;
-            Socket socket = Memory.getInstance().getSocket();
-            out = new ObjectOutputStream(socket.getOutputStream());
 
             RequestObject request = new RequestObject();
             request.setAction(Akcije.VRATI_SVE_TRENERE);
-            out.writeObject(request);
+             Komunikacija.vratiInstancu().posaljiZahtev(request);
 
-            in = new ObjectInputStream(socket.getInputStream());
-            ResponseObject response = (ResponseObject) in.readObject();
+            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
             
             if (response.getStatus() == EnumResponseStatus.OK) {
                 List<Trener> treneri = (List<Trener>) response.getObject();
@@ -401,6 +393,12 @@ public class FPocetna extends javax.swing.JFrame {
         ObjectOutputStream out;
         ObjectInputStream in;
         try {
+            
+            /**
+             * Ovo ne valja!!! 
+             */
+           
+            
             Socket socket = Memory.getInstance().getSocket();
             out = new ObjectOutputStream(socket.getOutputStream());
 
