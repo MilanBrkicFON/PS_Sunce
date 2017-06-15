@@ -109,7 +109,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/jpg/rsz_1492201245_save.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="sacuvaj"/>
+            <Property name="toolTipText" type="java.lang.String" value="sacuvaj izmene"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnSaveActionPerformed"/>
@@ -120,7 +120,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/jpg/rsz_delete.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="obrisi"/>
+            <Property name="toolTipText" type="java.lang.String" value="obrisi trenera"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnObrisiActionPerformed"/>
@@ -131,7 +131,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/jpg/rsz_add_friend-512.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="dodaj clana"/>
+            <Property name="toolTipText" type="java.lang.String" value="dodaj novog trenera"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnDodajActionPerformed"/>

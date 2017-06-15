@@ -80,7 +80,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jBtnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_1492201245_save.png"))); // NOI18N
-        jBtnSave.setToolTipText("sacuvaj");
+        jBtnSave.setToolTipText("sacuvaj izmene");
         jBtnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnSaveActionPerformed(evt);
@@ -88,7 +88,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         });
 
         jBtnObrisi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_delete.png"))); // NOI18N
-        jBtnObrisi.setToolTipText("obrisi");
+        jBtnObrisi.setToolTipText("obrisi trenera");
         jBtnObrisi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnObrisiActionPerformed(evt);
@@ -96,7 +96,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
         });
 
         jBtnDodaj.setIcon(new javax.swing.ImageIcon(getClass().getResource("/jpg/rsz_add_friend-512.png"))); // NOI18N
-        jBtnDodaj.setToolTipText("dodaj clana");
+        jBtnDodaj.setToolTipText("dodaj novog trenera");
         jBtnDodaj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnDodajActionPerformed(evt);

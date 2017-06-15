@@ -43,11 +43,9 @@ public class Komunikacija {
     public void posaljiZahtev(RequestObject request) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(Memory.getInstance().getSocket().getOutputStream());
         out.writeObject(request);
-        System.out.println("=== POSLAT ZAHTEV SERVERU ===");
     }
 
     public ResponseObject procitajOdgovor() throws IOException, ClassNotFoundException {
-        System.out.println("=== PRIHVACEN ODGOVOR OD SERVERA ===");
         return (ResponseObject) new ObjectInputStream(Memory.getInstance().getSocket().getInputStream()).readObject();
 
     }

@@ -38,7 +38,7 @@ import util.Akcije;
  */
 public class FPocetna extends javax.swing.JFrame {
 
-    private boolean statusKon = false;
+    private JPanel aktivniPanel;
 
     /**
      * Creates new form FPocetna
@@ -48,6 +48,7 @@ public class FPocetna extends javax.swing.JFrame {
             setLookAndFeel();
             initComponents();
             postaviStatus();
+            aktivniPanel = jPanelPocetna;
         } catch (Exception ex) {
             Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -67,7 +68,7 @@ public class FPocetna extends javax.swing.JFrame {
         jbtnPrikaziClanove = new javax.swing.JButton();
         jbtnPrikaziTrenere = new javax.swing.JButton();
         jbtnPrikaziPocetnu = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        jPanelPocetna = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         statusKonekcije = new javax.swing.JLabel();
@@ -157,7 +158,7 @@ public class FPocetna extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 102, 51));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setLabelFor(jPanel2);
+        jLabel1.setLabelFor(jPanelPocetna);
         jLabel1.setText("Sportsko-rekreativni klub \"Sunce\"");
         jLabel1.setFocusable(false);
 
@@ -171,36 +172,36 @@ public class FPocetna extends javax.swing.JFrame {
         jLabel3.setToolTipText("");
         jLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelPocetnaLayout = new javax.swing.GroupLayout(jPanelPocetna);
+        jPanelPocetna.setLayout(jPanelPocetnaLayout);
+        jPanelPocetnaLayout.setHorizontalGroup(
+            jPanelPocetnaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPocetnaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelPocetnaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanelPocetnaLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(statusKonekcije, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        jPanelPocetnaLayout.setVerticalGroup(
+            jPanelPocetnaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelPocetnaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanelPocetnaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statusKonekcije, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanelPocetna, java.awt.BorderLayout.CENTER);
 
         jMenu1.setText("File");
 
@@ -255,9 +256,10 @@ public class FPocetna extends javax.swing.JFrame {
         vratiNaPocetnu();
         try {
             JPanel panel = new PanelZaPrikazTreninga();
-            jPanel2.setVisible(false);
+            jPanelPocetna.setVisible(false);
             getContentPane().add(panel);
             panel.setVisible(true);
+            aktivniPanel = panel;
             //pack();
         } catch (Exception ex) {
             Logger.getLogger(FPocetna.class.getName()).log(Level.SEVERE, null, ex);
@@ -271,10 +273,11 @@ public class FPocetna extends javax.swing.JFrame {
     private void vratiNaPocetnu() {
         BorderLayout layout = (BorderLayout) getContentPane().getLayout();
         layout.getLayoutComponent(BorderLayout.CENTER).setVisible(false);
-        layout.addLayoutComponent(jPanel2, BorderLayout.CENTER);
-        jPanel2.setVisible(true);
-
+        layout.addLayoutComponent(jPanelPocetna, BorderLayout.CENTER);
+        jPanelPocetna.setVisible(true);
+        aktivniPanel = jPanelPocetna;
     }
+
     private void jMenuItemKonekcijaSaBazomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemKonekcijaSaBazomActionPerformed
         try {
             JDialogUnosParametraZaBazu unosZaBazu = new JDialogUnosParametraZaBazu(null, true);
@@ -295,18 +298,19 @@ public class FPocetna extends javax.swing.JFrame {
 
             RequestObject request = new RequestObject();
             request.setAction(Akcije.VRATI_SVE_CLANOVE);
-            
+
             Komunikacija.vratiInstancu().posaljiZahtev(request);
 
             ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
-            
+
             if (response.getStatus() == EnumResponseStatus.OK) {
                 List<Clan> clanovi = (List<Clan>) response.getObject();
                 TabelaModelPrikazIIzmenaClan model = new TabelaModelPrikazIIzmenaClan(clanovi);
                 JPanel panel = new PanelPrikazClanova(model);
-                jPanel2.setVisible(false);
+                jPanelPocetna.setVisible(false);
                 getContentPane().add(panel);
                 panel.setVisible(true);
+                aktivniPanel = panel;
             } else {
                 throw new Exception(response.getMessage());
             }
@@ -333,17 +337,18 @@ public class FPocetna extends javax.swing.JFrame {
 
             RequestObject request = new RequestObject();
             request.setAction(Akcije.VRATI_SVE_TRENERE);
-             Komunikacija.vratiInstancu().posaljiZahtev(request);
+            Komunikacija.vratiInstancu().posaljiZahtev(request);
 
             ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
-            
+
             if (response.getStatus() == EnumResponseStatus.OK) {
                 List<Trener> treneri = (List<Trener>) response.getObject();
                 TabelaModelPrikazIIzmenaTrener model = new TabelaModelPrikazIIzmenaTrener(treneri);
                 JPanel panel = new PanelPrikazTrenera(model);
-                jPanel2.setVisible(false);
+                jPanelPocetna.setVisible(false);
                 getContentPane().add(panel);
                 panel.setVisible(true);
+                aktivniPanel = panel;
             } else {
                 throw new Exception(response.getMessage());
             }
@@ -365,8 +370,8 @@ public class FPocetna extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemKonekcijaSaBazom;
     private javax.swing.JMenuItem jMenuItemKreirajClana;
     private javax.swing.JMenuItem jMenuItemKreirajTrenera;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelIkonice;
+    private javax.swing.JPanel jPanelPocetna;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JButton jbtnPrikaziClanove;
     private javax.swing.JButton jbtnPrikaziPocetnu;
@@ -393,12 +398,10 @@ public class FPocetna extends javax.swing.JFrame {
         ObjectOutputStream out;
         ObjectInputStream in;
         try {
-            
+
             /**
-             * Ovo ne valja!!! 
+             * Ovo ne valja!!!
              */
-           
-            
             Socket socket = Memory.getInstance().getSocket();
             out = new ObjectOutputStream(socket.getOutputStream());
 

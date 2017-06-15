@@ -35,6 +35,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         jProgressBar.setVisible(false);
+        procitajPodatke();
     }
 
     /**
@@ -260,7 +261,8 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
 
     private void uspostaviKonekciju() throws Exception {
 
-             ObjectOutputStream out;
+        
+            ObjectOutputStream out;
             ObjectInputStream in;
             Socket socket = Memory.getInstance().getSocket();
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -280,6 +282,7 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
         jProgressBar.setValue(60);
 
     }
+    
     private String status = "Status: ";
 
     private void testirajKonekciju() throws Exception {
@@ -316,6 +319,21 @@ public class JDialogUnosParametraZaBazu extends javax.swing.JDialog {
                 statusKonekcije.setText(status + ex.getMessage());
                 throw new Exception(ex);
             }
+        }
+    }
+
+    private void procitajPodatke() {
+        try {
+            String url = Util.getInstance().getUrl();
+            jtxtIpAdresa.setText(url.substring(url.lastIndexOf("//"), url.lastIndexOf(":")));
+            jtxtPort.setText(url.substring(url.lastIndexOf(":"), url.lastIndexOf("/")));
+            jtxtKorisnickoIme.setText(Util.getInstance().getUser());
+            jProgressBar.setValue(100);
+            String driver = Util.getInstance().getDriver();
+            if(driver.contains("mysql")){
+                jComboBox1.setSelectedIndex(1);
+            }
+        } catch (IOException ex) {
         }
     }
 }

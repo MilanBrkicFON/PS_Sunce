@@ -171,7 +171,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="jPanelPocetna">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
@@ -224,7 +224,7 @@
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="jPanel2"/>
+              <ComponentRef name="jPanelPocetna"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Sportsko-rekreativni klub &quot;Sunce&quot;"/>
             <Property name="focusable" type="boolean" value="false"/>
