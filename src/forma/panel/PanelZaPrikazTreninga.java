@@ -8,10 +8,13 @@ package forma.panel;
 import domen.Clan;
 import domen.Trener;
 import domen.Trening;
-import forma.UbaciClanoveUTrening;
+import forma.INazad;
+import forma.UbaciClanoveNaTrening;
+import forma.UbaciTrenereNaTrening;
 import forma.UnosTreninga;
 import forma.panel.model.ListModelClanovi;
 import forma.panel.model.ListModelTrener;
+import forma.panel.model.TabelaModelPrikazTrener;
 import forma.panel.model.TableModelPrikazVreme;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -19,8 +22,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import komunikacija.Komunikacija;
 import radnaMemorija.Memory;
@@ -32,7 +35,9 @@ import util.Akcije;
  *
  * @author Milan
  */
-public class PanelZaPrikazTreninga extends javax.swing.JPanel {
+public class PanelZaPrikazTreninga extends javax.swing.JPanel implements INazad{
+
+    private List<Trening> treninzi;
 
     /**
      * Creates new form PanelZaPrikazTreninga
@@ -311,34 +316,34 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private List<Trening> treninzi = new ArrayList<>();
 
     private void jcboxDatumTreningaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboxDatumTreningaActionPerformed
 
-        try {
-            RequestObject requestObj = new RequestObject();
-            requestObj.setObject((LocalDate) jcboxDatumTreninga.getSelectedItem());
-            requestObj.setAction(Akcije.VRATI_VREMENA);
-            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+//        try {
+//            RequestObject requestObj = new RequestObject();
+//            requestObj.setObject((LocalDate) jcboxDatumTreninga.getSelectedItem());
+//            requestObj.setAction(Akcije.VRATI_VREMENA);
+//            Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
+        LocalDate datum = (LocalDate) jcboxDatumTreninga.getSelectedItem();
 
-            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
-            treninzi = (List<Trening>) response.getObject();
-
-            /*Kontroler.getInstance().vratiSvaVremena((LocalDate) jcboxDatumTreninga.getSelectedItem());*/
-            popuniTabeluVremena(treninzi);
-        } catch (IOException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        }
+        List<Trening> tr = treninzi.stream()
+                .filter(t -> t.getDatum().equals(datum))
+                .collect(Collectors.toList());
+//            ResponseObject response = Komunikacija.vratiInstancu().procitajOdgovor();
+//            treninzi = (List<Trening>) response.getObject();
+        popuniTabeluVremena(tr);
+//        } catch (IOException | ClassNotFoundException ex) {
+//            JOptionPane.showMessageDialog(this, ex.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
+//        }
 
 
     }//GEN-LAST:event_jcboxDatumTreningaActionPerformed
 
     private void jTablePrikazVremenaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePrikazVremenaMouseClicked
-
-        int selectedRow = jTablePrikazVremena.getSelectedRow();
+        int selectedRow = jTablePrikazVremena.convertRowIndexToView(jTablePrikazVremena.getSelectedRow());
         if (selectedRow != -1) {
             jProgressBarPopunjenostTreninga.setVisible(true);
-            Trening trening = treninzi.get(selectedRow);
+            Trening trening = ((TableModelPrikazVreme)jTablePrikazVremena.getModel()).vratiTreninge().get(selectedRow);
             Memory.getInstance().setObj(trening);
             List<Trener> treneri = new ArrayList<>();
             List<Clan> clanovi = new ArrayList<>();
@@ -351,7 +356,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
 
                 ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
                 treneri = (List<Trener>) responseObj.getObject();
-                /*Kontroler.getInstance().vratiSveTrenere(trening);*/
+
                 trening.setTreneri(treneri);
             } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja trenera.", "Ucitavanje trenera", JOptionPane.ERROR_MESSAGE);
@@ -366,25 +371,26 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
                 ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
 
                 clanovi = (List<Clan>) responseObj.getObject();
-                /*Kontroler.getInstance().vratiSveClanove(trening);*/
+
                 trening.setClanovi(clanovi);
             } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage() + "\nGreska prilikom ucitavanja clanova.", "Ucitavanje claniva", JOptionPane.ERROR_MESSAGE);
             }
             try {
-                if (!treneri.isEmpty() && !clanovi.isEmpty()) {
-                    jListTrener.setModel(new ListModelTrener(treneri));
-                    jListClanova.setModel(new ListModelClanovi(clanovi));
-
+                jListTrener.setModel(new ListModelTrener(treneri));
+                jListClanova.setModel(new ListModelClanovi(clanovi));
+                
+                if(!clanovi.isEmpty() || !treneri.isEmpty()){
                     int popunjenost = new BigDecimal((clanovi.size() * 100.0) / treneri.get(0).getSport().getMaxBrClanova()).setScale(0, RoundingMode.HALF_UP).intValue();
                     jProgressBarPopunjenostTreninga.setValue(popunjenost);
-                    System.out.println("Popunjenost " + (popunjenost));
+                }else{
+                    jProgressBarPopunjenostTreninga.setValue(0);
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, e.getMessage());
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Greska", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!");
+            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!", "Greska", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jTablePrikazVremenaMouseClicked
@@ -393,7 +399,7 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         try {
             Trening trening = (Trening) Memory.getInstance().getObj();
             trening.setClanovi(((ListModelClanovi) jListClanova.getModel()).vratiClanoveNaTreningu());
-            UbaciClanoveUTrening dialog = new UbaciClanoveUTrening(null, false, trening);
+            UbaciClanoveNaTrening dialog = new UbaciClanoveNaTrening(null, false, trening);
             dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());
             dialog.setVisible(true);
         } catch (Exception ex) {
@@ -403,16 +409,25 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
     }//GEN-LAST:event_jBtnDodajClanaNaTreningActionPerformed
 
     private void jBtnDodajTreneraNaTreningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnDodajTreneraNaTreningActionPerformed
-        // TODO add your handling code here:
+        try {
+            Trening trening = (Trening) Memory.getInstance().getObj();
+            trening.setTreneri(((ListModelTrener) jListTrener.getModel()).vratiTrenereNaTreningu());
+            UbaciTrenereNaTrening dialog = new UbaciTrenereNaTrening(null, false, trening);
+            dialog.setLocation(jBtnDodajClanaNaTrening.getLocation());
+            dialog.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Morate izabrati vreme treninga!", "Greska", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_jBtnDodajTreneraNaTreningActionPerformed
 
     private void jbtnDodajTreningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDodajTreningActionPerformed
         try {
+
             UnosTreninga form = new UnosTreninga(null, true);
             form.setVisible(true);
             ucitajListuTreninga();
         } catch (Exception ex) {
-            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, ex, "Greska", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -453,19 +468,33 @@ public class PanelZaPrikazTreninga extends javax.swing.JPanel {
         try {
             RequestObject requestObj = new RequestObject();
 
-            requestObj.setAction(Akcije.VRATI_DATUME);
+            requestObj.setAction(Akcije.VRATI_TRENINGE);
             Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
             ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
-            List<LocalDate> datumi = (List<LocalDate>) responseObj.getObject();
+            treninzi = (List<Trening>) responseObj.getObject();
+
+            List<LocalDate> datumi = new ArrayList<>();
+
+            for (Trening trening : treninzi) {
+                if (!datumi.contains(trening.getDatum())) {
+                    datumi.add(trening.getDatum());
+                }
+            }
 
             datumi.stream().forEach((da) -> {
                 jcboxDatumTreninga.addItem(da);
             });
+
         } catch (IOException | ClassNotFoundException ex) {
             //ex.printStackTrace();
             throw new Exception(ex + "\nNe moze se prikazati panel sa treninzima!");
         }
+    }
+
+    @Override
+    public boolean proveriIzmene() {
+        return true;
     }
 
 }

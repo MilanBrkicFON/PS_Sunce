@@ -7,6 +7,7 @@ package forma.panel;
 
 import domen.Sport;
 import domen.Trener;
+import forma.INazad;
 import forma.UnosTrenera;
 import forma.panel.model.TabelaModelPrikazIIzmenaTrener;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -35,7 +38,9 @@ import util.Akcije;
  *
  * @author Milan
  */
-public class PanelPrikazTrenera extends javax.swing.JPanel {
+public class PanelPrikazTrenera extends javax.swing.JPanel implements INazad, TableModelListener {
+
+    private boolean sacuvan = true;
 
     /**
      * Creates new form PanelPrikazClanova
@@ -225,6 +230,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, promenjeni);
             TabelaModelPrikazIIzmenaTrener model = (TabelaModelPrikazIIzmenaTrener) jTable1.getModel();
             model.fireTableDataChanged();
+            sacuvan = true;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
@@ -278,6 +284,7 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
                 TableColumn tc = tcm.getColumn(5);
                 tc.setCellEditor(new DefaultCellEditor(jcbSprtovi));
             }
+            jTable1.getModel().addTableModelListener(this);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
@@ -289,6 +296,16 @@ public class PanelPrikazTrenera extends javax.swing.JPanel {
 
     public void setjTable1(JTable jTable1) {
         this.jTable1 = jTable1;
+    }
+
+    @Override
+    public boolean proveriIzmene() {
+        return sacuvan;
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        sacuvan = false;
     }
 
 }

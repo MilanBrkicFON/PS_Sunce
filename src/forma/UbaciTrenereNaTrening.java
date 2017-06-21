@@ -6,9 +6,12 @@
 package forma;
 
 import domen.Clan;
+import domen.Trener;
 import domen.Trening;
 import forma.panel.PanelPrikazClanova;
+import forma.panel.PanelPrikazTrenera;
 import forma.panel.model.TabelaModelPrikazClan;
+import forma.panel.model.TabelaModelPrikazTrener;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -28,23 +31,23 @@ import util.Akcije;
  *
  * @author Milan
  */
-public class UbaciClanoveUTrening extends javax.swing.JDialog {
+public class UbaciTrenereNaTrening extends javax.swing.JDialog {
 
-    private final List<Clan> clanovi;
+    private final List<Trener> treneri;
     private Trening trening;
 
     /**
      * Creates new form UbaciClanoveUTrening
      */
-    public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal) throws Exception {
+    public UbaciTrenereNaTrening(java.awt.Frame parent, boolean modal) throws Exception {
         super(parent, modal);
-        this.clanovi = vratiClanove();
+        this.treneri = vratiTrenere();
         initComponents();
 
         postaviPanele();
     }
 
-    public UbaciClanoveUTrening(java.awt.Frame parent, boolean modal, Trening trening) throws Exception {
+    public UbaciTrenereNaTrening(java.awt.Frame parent, boolean modal, Trening trening) throws Exception {
         this(parent, modal);
         this.trening = trening;
 
@@ -122,10 +125,10 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
 
     private void jTxtPretragaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTxtPretragaKeyReleased
         Predicate<String> searchedValue = (String v) -> v.toLowerCase().contains(jTxtPretraga.getText());
-        List<Clan> kopija = clanovi;
-        List<Clan> filteredClanovi = filterList(searchedValue, kopija);
-        TabelaModelPrikazClan model = (TabelaModelPrikazClan) panel.getjTable1().getModel();
-        model.setClanovi(filteredClanovi);
+        List<Trener> kopija = treneri;
+        List<Trener> filteredClanovi = filterList(searchedValue, kopija);
+        TabelaModelPrikazTrener model = (TabelaModelPrikazTrener) panel.getjTable1().getModel();
+        model.setTreneri(filteredClanovi);
     }//GEN-LAST:event_jTxtPretragaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -133,14 +136,14 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
         try {
             int rowSelectedViewModel = table.convertRowIndexToModel(table.getSelectedRow());
             if (rowSelectedViewModel != -1) {
-                Clan c = ((TabelaModelPrikazClan) table.getModel()).getClanovi().get(rowSelectedViewModel);
-                if (trening.getClanovi().contains(c)) {
-                    JOptionPane.showMessageDialog(this, "Član je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
+                Trener t = ((TabelaModelPrikazTrener) table.getModel()).getTrenere().get(rowSelectedViewModel);
+                if (trening.getTreneri().contains(t)) {
+                    JOptionPane.showMessageDialog(this, "Trener je već prijavljen na trening", "Greška", JOptionPane.ERROR_MESSAGE);
                 } else {
                     try {
                         RequestObject requestObj = new RequestObject();
-                        requestObj.setAction(Akcije.DODAJ_CLANA_NA_TRENING);
-                        Object[] o = {c, trening};
+                        requestObj.setAction(Akcije.DODAJ_TRENERA_NA_TRENING);
+                        Object[] o = {t, trening};
                         requestObj.setObject(o);
                         Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
@@ -149,15 +152,15 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
                             throw new Exception(responseObj.getMessage());
                         }
                         
-                        KontrolaOsluskivac.getInstance().obavestiSveDodavanje(c);
-                        JOptionPane.showMessageDialog(this, "Uspešno ste dodali člana na trening(" + trening + ")");
+                        KontrolaOsluskivac.getInstance().obavestiSveDodavanje(t);
+                        JOptionPane.showMessageDialog(this, "Uspešno ste dodali trenera na trening(" + trening + ")");
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage());
                     }
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(this, "Morate izabrati clana iz tabele!");
+            JOptionPane.showMessageDialog(this, "Morate izabrati trenera iz tabele!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -167,49 +170,48 @@ public class UbaciClanoveUTrening extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jTxtPretraga;
     // End of variables declaration//GEN-END:variables
-    private PanelPrikazClanova panel;
+    private PanelPrikazTrenera panel;
 
     private void postaviPanele() {
         try {
-
-            TabelaModelPrikazClan model = new TabelaModelPrikazClan(clanovi);
-            panel = new PanelPrikazClanova(model);
+            TabelaModelPrikazTrener model = new TabelaModelPrikazTrener(treneri);
+            panel = new PanelPrikazTrenera(model);
             panel.getHeader().setVisible(false);
-            //System.out.println("Clanovi: -------------" + clanovi.size());
+            panel.getjTable1().setEnabled(true);
             this.add(panel);
 
             pack();
         } catch (Exception ex) {
-            Logger.getLogger(UbaciClanoveUTrening.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UbaciTrenereNaTrening.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public List<Clan> filterList(Predicate<String> p, List<Clan> clanovi) {
-        List<Clan> result = new ArrayList<>();
-        for (Clan clan : clanovi) {
-            if (p.test(clan.getAttributes())) {
-                result.add(clan);
+    public List<Trener> filterList(Predicate<String> p, List<Trener> treneri) {
+        List<Trener> result = new ArrayList<>();
+        for (Trener trener : treneri) {
+            if (p.test(trener.getAttributes())) {
+                result.add(trener);
             }
         }
         return result;
     }
 
-    private List<Clan> vratiClanove() throws Exception {
+    private List<Trener> vratiTrenere() throws Exception {
         ObjectOutputStream out = null;
-        List<Clan> clans = new ArrayList<>();
+        List<Trener> tr = new ArrayList<>();
         try {
             RequestObject requestObj = new RequestObject();
-            requestObj.setAction(Akcije.VRATI_SVE_CLANOVE);
+            requestObj.setAction(Akcije.VRATI_SVE_TRENERE);
             Komunikacija.vratiInstancu().posaljiZahtev(requestObj);
 
             ResponseObject responseObj = Komunikacija.vratiInstancu().procitajOdgovor();
             if (responseObj.getStatus() == EnumResponseStatus.ERROR) {
                 throw new Exception(responseObj.getMessage());
             }
-            clans = (List<Clan>) responseObj.getObject();
+            tr = (List<Trener>) responseObj.getObject();
         } catch (Exception ex) {
             throw new Exception(ex.getMessage());
         }
-        return clans;
+        return tr;
     }
 }

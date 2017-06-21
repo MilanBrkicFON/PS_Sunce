@@ -16,7 +16,7 @@ import radnaMemorija.KontrolaOsluskivac;
  *
  * @author Milan
  */
-public class ListModelClanovi extends AbstractListModel<Clan> implements OsluskivacClanovi,Serializable{
+public class ListModelClanovi extends AbstractListModel<Clan> implements OsluskivacClanovi{
 
     private final List<Clan> clanovi;
 
@@ -27,7 +27,7 @@ public class ListModelClanovi extends AbstractListModel<Clan> implements Osluski
 
     @Override
     public int getSize() {
-        return clanovi == null ? 0 : clanovi.size();
+        return clanovi == null || clanovi.isEmpty() ? 0 : clanovi.size();
     }
 
     @Override

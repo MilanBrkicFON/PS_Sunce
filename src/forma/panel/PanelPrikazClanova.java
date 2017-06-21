@@ -7,6 +7,7 @@ package forma.panel;
 
 import domen.Clan;
 import domen.Mesto;
+import forma.INazad;
 import forma.UnosClana;
 import forma.panel.model.TabelaModelPrikazIIzmenaClan;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -36,7 +39,9 @@ import util.Akcije;
  *
  * @author Milan
  */
-public class PanelPrikazClanova extends javax.swing.JPanel {
+public class PanelPrikazClanova extends javax.swing.JPanel implements TableModelListener, INazad {
+
+    private boolean sacuvan = true;
 
     /**
      * Creates new form PanelPrikazClanova
@@ -211,14 +216,11 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, promenjeni);
             TabelaModelPrikazIIzmenaClan model = (TabelaModelPrikazIIzmenaClan) jTable1.getModel();
             model.fireTableDataChanged();
+            sacuvan = true;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }//GEN-LAST:event_jBtnSaveActionPerformed
-
-    public JPanel getHeader() {
-        return jPanelHeader;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnDodaj;
@@ -229,6 +231,10 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    public JPanel getHeader() {
+        return jPanelHeader;
+    }
 
     private void postaviModel(TableModel model) {
         try {
@@ -258,6 +264,7 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
                 TableColumn tc = tcm.getColumn(7);
                 tc.setCellEditor(new DefaultCellEditor(jcbMesta));
             }
+            jTable1.getModel().addTableModelListener(this);
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
@@ -269,6 +276,16 @@ public class PanelPrikazClanova extends javax.swing.JPanel {
 
     public void setjTable1(JTable jTable1) {
         this.jTable1 = jTable1;
+    }
+
+    @Override
+    public boolean proveriIzmene() {
+        return sacuvan;
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        sacuvan = false;
     }
 
 }

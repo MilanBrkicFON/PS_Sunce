@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import komunikacija.Komunikacija;
 import request.RequestObject;
@@ -124,8 +126,9 @@ public class TabelaModelPrikazIIzmenaClan extends AbstractTableModel implements 
                 c.setMesto((Mesto) aValue);
                 break;
         }
-
+        fireTableChanged(new TableModelEvent(this));
     }
+
 
     public List<Clan> getClanovi() {
         return clanovi;

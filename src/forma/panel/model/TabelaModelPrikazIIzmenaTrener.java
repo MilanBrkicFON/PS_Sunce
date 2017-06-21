@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import komunikacija.Komunikacija;
 import osluskivac.OsluskivacTreneri;
@@ -90,27 +91,27 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
         switch (columnIndex) {
 
             case 1:
-//                t.setPromenjen(promeniStatus(t.getIme(), aValue));
+                t.setPromenjen(promeniStatus(t.getIme(), aValue));
                 t.setIme((String) aValue);
                 break;
             case 2:
-//                t.setPromenjen(promeniStatus(t.getPrezime(), aValue));
+                t.setPromenjen(promeniStatus(t.getPrezime(), aValue));
                 t.setPrezime((String) aValue);
                 break;
             case 3:
-//                t.setPromenjen(promeniStatus(t.getImeRoditelja(), aValue));
+                t.setPromenjen(promeniStatus(t.getDatumRodjenja(), aValue));
                 t.setDatumRodjenja(LocalDate.parse((CharSequence) aValue));
                 break;
             case 4:
-//                t.setPromenjen(true);
+                t.setPromenjen(true);
                 t.setGodineRada(Integer.parseInt((String) aValue));
                 break;
             case 5:
-//                t.setPromenjen(promeniStatus(String.valueOf(t.getPol()),aValue));
+                t.setPromenjen(promeniStatus(t.getSport(),aValue));
                 t.setSport(((Sport) aValue));
                 break;
         }
-
+        fireTableChanged(new TableModelEvent(this));
     }
 
     public List<Trener> getTrenere() {
@@ -122,8 +123,8 @@ public class TabelaModelPrikazIIzmenaTrener extends AbstractTableModel implement
         fireTableDataChanged();
     }
 
-    private boolean promeniStatus(String ime, Object aValue) {
-        if (!ime.equals((String) aValue)) {
+    private boolean promeniStatus(Object ime, Object aValue) {
+        if (!ime.equals(aValue)) {
             fireTableDataChanged();
             return true;
         }

@@ -39,7 +39,7 @@ import util.Akcije;
 public class FPocetna extends javax.swing.JFrame {
 
     private JPanel aktivniPanel;
-
+    
     /**
      * Creates new form FPocetna
      */
@@ -267,7 +267,21 @@ public class FPocetna extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnPrikaziTreningActionPerformed
 
     private void jbtnPrikaziPocetnuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnPrikaziPocetnuActionPerformed
-        vratiNaPocetnu();
+        if(((INazad) aktivniPanel).proveriIzmene()){
+            vratiNaPocetnu();
+        }else{
+            int odg = JOptionPane.showConfirmDialog(
+                    aktivniPanel,
+                    "Niste sacuvali izmene. Da li ste sigurni da zelite da izadjete?",
+                    "Upozorenje", 
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if(odg == JOptionPane.YES_OPTION){
+                vratiNaPocetnu();
+            }            
+        }
+        
     }//GEN-LAST:event_jbtnPrikaziPocetnuActionPerformed
 
     private void vratiNaPocetnu() {

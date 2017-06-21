@@ -50,5 +50,7 @@ public class TableModelPrikazVreme extends AbstractTableModel {
                 return "N/a";
         }
     }
-
+    public List<Trening> vratiTreninge(){
+        return treninzi;
+    }
 }
