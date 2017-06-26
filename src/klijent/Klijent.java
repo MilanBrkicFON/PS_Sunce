@@ -5,7 +5,7 @@
  */
 package klijent;
 
-import forma.FPocetna;
+import forme.FPocetna;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;

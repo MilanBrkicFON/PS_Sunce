@@ -33,11 +33,16 @@ public final class KontrolaOsluskivac {
     }
 
     public void addListener(OsluskivacClanovi listener) {
-        oClanovi.add(listener);
+        if (!oClanovi.contains(listener)) {
+            oClanovi.add(listener);
+        }
     }
 
     public void addListener(OsluskivacTreneri listener) {
-        oTreneri.add(listener);
+        if (!oTreneri.contains(listener)) {
+            oTreneri.add(listener);
+        }
+
     }
 
     public void obavestiSveDodavanje(Clan clan) {

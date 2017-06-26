@@ -5,9 +5,6 @@
  */
 package radnaMemorija;
 
-import domen.Clan;
-import domen.Mesto;
-import domen.Trener;
 import domen.Trening;
 import java.net.Socket;
 
@@ -19,7 +16,7 @@ public class Memory {
 
     private static Memory instance;
     private Socket socket;
-
+    private Trening trening;
     private Object obj;
 
     private Memory() {
@@ -51,4 +48,13 @@ public class Memory {
         this.socket = socket;
     }
 
+    public Trening getTrening() {
+        return trening;
+    }
+
+    public void setTrening(Trening trening) {
+        this.trening = trening;
+    }
+    
+    
 }
